@@ -10,28 +10,23 @@ class CustomUser(AbstractUser, BaseModel):
     profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
     phone_number = models.CharField(max_length=15, null=True, blank=True)
 
-
-
-class Organization(models.Model):
+class Organization(BaseModel):
     name = models.CharField(max_length=255, unique=True)
+    superusers = models.ManyToManyField('CustomUser',related_name="superuser_organizations")
     employees = models.ManyToManyField('CustomUser', blank=True, related_name="organizations")
     departments = models.ManyToManyField('Department', blank=True, related_name="organizations")
     locations = models.ManyToManyField('Location', blank=True, related_name="organizations")
     designations = models.ManyToManyField('Designation', blank=True, related_name="organizations")
     
-    def get_allusers(self):
-        return self.employees.all()
 
-class Department(models.Model):
+class Department(BaseModel):
     name = models.CharField(max_length=255)
 
-class Location(models.Model):
+class Location(BaseModel):
     name = models.CharField(max_length=255)
     
-class Designation(models.Model):
+class Designation(BaseModel):
     title = models.CharField(max_length=255)
-
-
 
 
 

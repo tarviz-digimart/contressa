@@ -21,7 +21,7 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from django.http import JsonResponse
 from rest_framework.routers import DefaultRouter
-from user.views import CustomUserViewSet
+from organization.views import CustomUserViewSet
 
 
 router = DefaultRouter()

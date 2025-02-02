@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     'dj_rest_auth',  # For REST API views
     'dj_rest_auth.registration',  # For user registration via REST API
     'base',
-    'user'
+    'tasks',
+    'organization'
 ]
 
 MIDDLEWARE = [
@@ -105,7 +106,7 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
-AUTH_USER_MODEL = 'user.CustomUser'
+AUTH_USER_MODEL = 'organization.CustomUser'
  
 
 
