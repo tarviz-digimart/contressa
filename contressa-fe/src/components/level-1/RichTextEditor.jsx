@@ -61,7 +61,6 @@ const RichTextEditor = () => {
     }
   };
 
-  console.log('Content:', content);
   return (
     <div>
       {/* Content-Editable Div */}
