@@ -1,4 +1,4 @@
-import BasicModal from "@/components/level-2/workItemPopup";
+import BasicModal from "@/components/level-2/workItemModal";
 import React from "react";
 
 function page() {
