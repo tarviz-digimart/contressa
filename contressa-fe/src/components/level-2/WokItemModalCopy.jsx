@@ -3,18 +3,14 @@ import * as React from 'react';
 import { useState } from 'react';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
-import { Avatar, IconButton, Switch, TextField } from '@mui/material';
+import { Avatar, IconButton, TextField } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import StyledAccordion from '../level-1/WorkItemAccordion';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import NotificationImportantIcon from '@mui/icons-material/NotificationImportant';
 import { getAvatarColor } from '../../utils/avatarColors';
 import RichTextEditor from '../level-1/RichTextEditor';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
-import AddLinkIcon from '@mui/icons-material/AddLink';
-import MoreTimeIcon from '@mui/icons-material/MoreTime';
-import SwitchTabs from '../level-1/workItemModal/SwitchTab';
+
 const currentuser = { username: 'Ebrahim' };
 const style = {
   position: 'absolute',
@@ -34,7 +30,6 @@ export default function WorkItemModal() {
   const [title, setTitle] = React.useState('');
   const [comments, setComments] = useState('');
   const [important, setImportant] = useState(false);
-  const [selectedButton, setSelectedButton] = useState();
 
   const [commentsData, setCommentsData] = useState([]);
 
@@ -62,13 +57,14 @@ export default function WorkItemModal() {
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
-        sx={{ borderRadius: '5px', paddingBottom: '2rem' }}
+        sx={{ borderRadius: '5px' }}
       >
-        <div className="overflow-hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[95%] bg-white border-2 border-black shadow-xl p-4 h-[95%] flex flex-col gap-4">
-          {/* title, notification and close */}
-          <div className="flex justify-between mb-3 items-center">
+        <div
+          // style={style}
+          className="overflow-hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[95%] bg-white border-2 border-black shadow-xl p-4 h-[95%]"
+        >
+          <div className="flex justify-between mb-3">
             {/* Title */}
-            <p className="bg-violet-300 p-1 px-2 rounded-md">#{'22'}</p>
             <div className="w-[90%]">
               <TextField
                 fullWidth
@@ -91,57 +87,28 @@ export default function WorkItemModal() {
                 }}
               />
             </div>
-
             <div className="flex">
               <IconButton onClick={() => setImportant((prev) => !prev)}>
-                {important ? (
-                  <NotificationsActiveIcon sx={{ color: 'red' }} />
-                ) : (
-                  <NotificationsIcon />
-                )}
+                <NotificationImportantIcon sx={{ color: important ? 'red' : 'none' }} />
               </IconButton>
               <IconButton onClick={handleClose}>
                 <CloseIcon />
               </IconButton>
             </div>
           </div>
+          <PanelGroup direction="horizontal" className="flex gap-4 h-full w-full">
+            <Panel defaultSize={30} minSize={20}>
+              <div className="overflow-y-auto h-[100%] flex flex-col gap-y-4 w-full pb-[10%]">
+                {/* Description */}
+                <div>
+                  <p className="font-bold text-slate-950">Description</p>
+                  {/* Media */}
+                  <RichTextEditor />
+                </div>
 
-          {/* Add, DeadLine, Priority */}
-          <div className="flex gap-8">
-            <div className="flex gap-2">
-              <Button
-                variant="contained"
-                sx={{ textTransform: 'none' }}
-                className="flex text-black bg-slate-200 gap-2 items-center"
-              >
-                <AddLinkIcon /> <p>Add</p>
-              </Button>
-              <Button
-                variant="contained"
-                sx={{ textTransform: 'none' }}
-                className="flex text-black bg-slate-200 gap-2  items-center"
-              >
-                <MoreTimeIcon /> <p>DeadLine</p>
-              </Button>
-            </div>
-            <div className="flex items-center">
-              <p className="font-bold">Priority</p> <Switch />
-            </div>
-          </div>
-
-          <div className="flex gap-4 h-full w-full bg-pink-400 p-1">
-            {/* left div */}
-            <div className="w-full h-full flex flex-col gap-4 bg-green-300 overflow-y-auto">
-              <div className="shadow-md  bg-slate-100 p-5">
-                <p className="font-bold h-[12rem] text-slate-950">Description</p>
-                <div className="border-2">text for the description</div>
-              </div>
-              <div className="shadow-md flex-1 flex flex-col bg-slate-100">
-                <SwitchTabs />
-                <div className="p-5 flex flex-col gap-2 h-full bg-blue-200">
-                  <p className="font-bold ">Comments</p>
-
-                  {/* comment typing area */}
+                {/* Comments */}
+                <div className="flex flex-col gap-2 bg-green-300">
+                  <p className="font-bold">Activity</p>
                   <div className="flex gap-2 items-start">
                     <Avatar sx={{ bgcolor: getAvatarColor(currentuser.username) }}>
                       {currentuser.username?.[0]}
@@ -153,7 +120,7 @@ export default function WorkItemModal() {
                       multiline
                       value={comments}
                       onChange={(e) => setComments(e.target.value)}
-                      onKeyDown={handleKeyPress}
+                      onKeyDown={handleKeyPress} // Handle Enter key press                        rows={2}
                       InputProps={{
                         sx: {
                           '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
@@ -163,9 +130,7 @@ export default function WorkItemModal() {
                       }}
                     />
                   </div>
-
-                  {/* comments area */}
-                  <div className="overflow-y-auto flex-1 max-h-full">
+                  <div className="flex flex-col gap-4">
                     {commentsData?.map((item, index) => (
                       <div key={index} className="flex gap-2">
                         <Avatar sx={{ bgcolor: getAvatarColor(item.name) }}>
@@ -183,13 +148,14 @@ export default function WorkItemModal() {
                   </div>
                 </div>
               </div>
-            </div>
-
-            {/* right div */}
-            <div className="h-full w-full bg-slate-200">
-              <StyledAccordion />
-            </div>
-          </div>
+            </Panel>
+            <PanelResizeHandle className="w-[2px] bg-slate-500" />
+            <Panel defaultSize={30} minSize={20}>
+              <div className="w-full overflow-y-auto">
+                <StyledAccordion />
+              </div>
+            </Panel>
+          </PanelGroup>
         </div>
       </Modal>
     </div>

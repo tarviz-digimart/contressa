@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Divider from '@mui/material/Divider';
 import BasicSelect from './BasicSelect';
+import VerticalLinearStepper from './workItemModal/VerticalStepper';
 
 const DropdownField = ({ label, placeholder, data, onChange, avatar }) => (
   <div className="flex gap-2 items-center w-full">
@@ -89,6 +90,10 @@ export default function StyledAccordion() {
             data={labelData}
             onChange={(value) => handleSelectionChange('label', value)}
           />
+          <Divider />
+          <div className="flex items-center justify-center">
+            <VerticalLinearStepper />
+          </div>
         </AccordionDetails>
       </Accordion>
     </div>
