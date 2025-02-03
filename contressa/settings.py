@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 from dotenv import load_dotenv
 import os
+from google.auth import load_credentials_from_file
+from google.oauth2.service_account import Credentials
 
 load_dotenv()
 
@@ -50,6 +52,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.microsoft',
     'dj_rest_auth',  # For REST API views
     'dj_rest_auth.registration',  # For user registration via REST API
+    'fcm_django'
     'base',
     'tasks',
     'organization'
@@ -242,3 +245,41 @@ SOCIALACCOUNT_ADAPTER = "allauth.socialaccount.adapter.DefaultSocialAccountAdapt
 # LOGIN_REDIRECT_URL = "/"  # Prevents unwanted redirects
 # LOGOUT_REDIRECT_URL = "/"  # Redirects to home after logout
 
+
+# create a custom Credentials class to load a non-default google service account JSON
+class CustomFirebaseCredentials(credentials.ApplicationDefault):
+    def __init__(self, account_file_path: str):
+        super().__init__()
+        self._account_file_path = account_file_path
+
+    def _load_credential(self):
+        if not self._g_credential:
+            self._g_credential, self._project_id = load_credentials_from_file(self._account_file_path,
+                                                                              scopes=credentials._scopes)
+
+
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import initialize_app
+
+# Path to your Firebase service account JSON file
+cred = credentials.Certificate('CUSTOM_GOOGLE_APPLICATION_CREDENTIALS')
+
+# Initialize the Firebase Admin SDK with the credentials
+firebase_admin.initialize_app()
+# To learn more, visit the docs here:
+# https://cloud.google.com/docs/authentication/getting-started>
+
+FCM_DJANGO_SETTINGS = {
+     # an instance of firebase_admin.App to be used as default for all fcm-django requests
+     # default: None (the default Firebase app)
+    "DEFAULT_FIREBASE_APP": None,
+     # default: _('FCM Django')
+     # true if you want to have only one active device per registered user at a time
+     # default: False
+    "ONE_DEVICE_PER_USER": False,
+     # devices to which notifications cannot be sent,
+     # are deleted upon receiving error response from FCM
+     # default: False
+    "DELETE_INACTIVE_DEVICES": True,
+}

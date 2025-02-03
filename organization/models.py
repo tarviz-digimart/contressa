@@ -12,8 +12,9 @@ class CustomUser(AbstractUser, BaseModel):
 
 class Organization(BaseModel):
     name = models.CharField(max_length=255, unique=True)
+    description = models.TextField()
     superusers = models.ManyToManyField('CustomUser',related_name="superuser_organizations")
-    employees = models.ManyToManyField('CustomUser', blank=True, related_name="organizations")
+    employees = models.ManyToManyField('CustomUser', blank=True,null=True, related_name="organizations")
     departments = models.ManyToManyField('Department', blank=True, related_name="organizations")
     locations = models.ManyToManyField('Location', blank=True, related_name="organizations")
     designations = models.ManyToManyField('Designation', blank=True, related_name="organizations")

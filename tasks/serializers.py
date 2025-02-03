@@ -1,11 +1,7 @@
 from rest_framework import serializers
-from .models import Project, Organization
-from organization.models import CustomUser 
-
-class OrganizationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Organization
-        fields = ['id', 'name']
+from organization.models import CustomUser
+from organization.serializers import OrganizationSerializer
+from tasks.models import Project
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
