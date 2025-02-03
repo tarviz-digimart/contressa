@@ -220,14 +220,6 @@ LOGIN_URL = 'account_login'
 # Django Rest Auth Configuration
 REST_USE_JWT = True  # This is recommended when using dj-rest-auth with JWT tokens
 
-# Social Authentication Configuration
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'SCOPE': ['email'],
-        'AUTH_PARAMS': {'access_type': 'online'},
-        'OAUTH_PKCE_ENABLED': True,
-    }
-}
 
 SITE_ID = 1  # Default, required by django-allauth
 

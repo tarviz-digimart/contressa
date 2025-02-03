@@ -22,6 +22,7 @@ from drf_yasg import openapi
 from django.http import JsonResponse
 from rest_framework.routers import DefaultRouter
 from organization.views import CustomUserViewSet
+from .views import GoogleLogin
 
 
 router = DefaultRouter()
@@ -47,9 +48,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('dj_rest_auth.urls')),  # Login, logout, password reset
     path('auth/registration/', include('dj_rest_auth.registration.urls')),  # Registration
-    path('auth/social/', include('allauth.socialaccount.urls')),  # Social Auth (Google, Facebook, etc.)
-    path('accounts/login/', dummy_login_view, name='account_login'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0),name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0),name='schema-redoc'),
     path('api/', include(router.urls)),
+    path('auth/social/login/', GoogleLogin.as_view(), name='google_login'),
 ]
