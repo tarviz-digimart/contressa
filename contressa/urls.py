@@ -25,6 +25,10 @@ from organization.views import CustomUserViewSet
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from dj_rest_auth.registration.views import SocialLoginView
 from organization.views import CustomRegisterView
+from dj_rest_auth.registration.views import VerifyEmailView
+from allauth.account.views import ConfirmEmailView, email_verification_sent
+
+
 class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
 
@@ -44,6 +48,7 @@ schema_view = get_schema_view(
     permission_classes=(permissions.AllowAny,)
 )
 
+        
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('dj_rest_auth.urls')),  # Login, logout, password reset
@@ -54,5 +59,8 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('auth/social/login/', GoogleLogin.as_view(), name='google_login'),
     path('auth/registration/', CustomRegisterView.as_view()), # Override the registration URL
+    path('auth/registration/account-confirm-email/<str:key>/', ConfirmEmailView.as_view(), name='account_confirm_email'),
+    path('auth/verification-sent/', email_verification_sent, name='account_email_verification_sent'),
+    path('auth/registration/verify-email/', VerifyEmailView.as_view(), name='rest_verify_email'),
 
 ]

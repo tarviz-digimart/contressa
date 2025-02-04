@@ -252,3 +252,16 @@ ACCOUNT_USERNAME_REQUIRED = False  # Ensures the username is not required
 ACCOUNT_AUTHENTICATED_REMEMBER = True
 ACCOUNT_EMAIL_REQUIRED = True  # Make email required
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'  # Ensure email verification
+
+SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
+SENDGRID_SENDER = os.getenv('SENDGRID_SENDER')
+
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv('SMTP_EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('SMTP_EMAIL_HOST_PASSWORD') # Use the 16-character app password
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')

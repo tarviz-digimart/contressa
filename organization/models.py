@@ -45,6 +45,7 @@ class CustomUser(AbstractUser):
                 self.last_name = names[1]
             else:
                 self.last_name = ''
+        self.username = self.email
         super().save(*args, **kwargs)
 
 class Organization(BaseModel):
