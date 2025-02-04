@@ -51,6 +51,8 @@ INSTALLED_APPS = [
     'dj_rest_auth',  # For REST API views
     'dj_rest_auth.registration',  # For user registration via REST API
     'base',
+    'tasks',
+    'organization'
 ]
 
 MIDDLEWARE = [
@@ -103,6 +105,10 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
+
+AUTH_USER_MODEL = 'organization.CustomUser'
+ 
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -229,10 +235,10 @@ ACCOUNT_ADAPTER = "allauth.account.adapter.DefaultAccountAdapter"
 SOCIALACCOUNT_ADAPTER = "allauth.socialaccount.adapter.DefaultSocialAccountAdapter"
 
 # Disable the redirect to login page
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = "optional"
+# ACCOUNT_AUTHENTICATION_METHOD = 'email'
+# ACCOUNT_EMAIL_REQUIRED = True
+# ACCOUNT_EMAIL_VERIFICATION = "optional"
 
-LOGIN_REDIRECT_URL = "/"  # Prevents unwanted redirects
-LOGOUT_REDIRECT_URL = "/"  # Redirects to home after logout
+# LOGIN_REDIRECT_URL = "/"  # Prevents unwanted redirects
+# LOGOUT_REDIRECT_URL = "/"  # Redirects to home after logout
 
