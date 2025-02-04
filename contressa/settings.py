@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.microsoft',
     'dj_rest_auth',  # For REST API views
     'dj_rest_auth.registration',  # For user registration via REST API
+    'fcm_django',
     'base',
     'tasks',
     'organization'
@@ -64,6 +65,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
 ROOT_URLCONF = 'contressa.urls'
@@ -242,3 +244,10 @@ SOCIALACCOUNT_ADAPTER = "allauth.socialaccount.adapter.DefaultSocialAccountAdapt
 # LOGIN_REDIRECT_URL = "/"  # Prevents unwanted redirects
 # LOGOUT_REDIRECT_URL = "/"  # Redirects to home after logout
 
+from firebase_admin import initialize_app
+FIREBASE_APP = initialize_app()
+
+FCM_DJANGO_SETTINGS = {
+    "ONE_DEVICE_PER_USER": True,
+    "DELETE_INACTIVE_DEVICES": True,
+}
