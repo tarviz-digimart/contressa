@@ -114,18 +114,21 @@ AUTH_USER_MODEL = 'organization.CustomUser'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "OPTIONS": {"max_similarity": 0.7},  # Prevents passwords similar to user attributes
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {"min_length": 8},  # Requires at least 8 characters
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
+
 
 
 # Internationalization
@@ -217,19 +220,10 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 
-LOGIN_URL = 'account_login'
 
 # Django Rest Auth Configuration
 REST_USE_JWT = True  # This is recommended when using dj-rest-auth with JWT tokens
 
-# Social Authentication Configuration
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'SCOPE': ['email'],
-        'AUTH_PARAMS': {'access_type': 'online'},
-        'OAUTH_PKCE_ENABLED': True,
-    }
-}
 
 SITE_ID = 1  # Default, required by django-allauth
 
@@ -251,3 +245,23 @@ FCM_DJANGO_SETTINGS = {
     "ONE_DEVICE_PER_USER": True,
     "DELETE_INACTIVE_DEVICES": True,
 }
+
+
+# Disable the username field
+ACCOUNT_USERNAME_REQUIRED = False  # Ensures the username is not required
+ACCOUNT_AUTHENTICATED_REMEMBER = True
+ACCOUNT_EMAIL_REQUIRED = True  # Make email required
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'  # Ensure email verification
+
+SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
+SENDGRID_SENDER = os.getenv('SENDGRID_SENDER')
+
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv('SMTP_EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('SMTP_EMAIL_HOST_PASSWORD') # Use the 16-character app password
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
