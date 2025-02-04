@@ -11,25 +11,25 @@ function Projects() {
       date: "28 January 2025",
     },
     {
-      title: "You’re a Jira pro. What’s next?",
-      author: "Learn Jira in 10 minutes 🔥",
+      title: "You’re a contressa pro. What’s next?",
+      author: "Learn contressa in 10 minutes 🔥",
       date: "28 January 2025",
     },
     {
       title:
         "Workflows 101: How to work smart with insights and automations 🧠",
-      author: "Learn Jira in 10 minutes 🔥",
+      author: "Learn contressa in 10 minutes 🔥",
       date: "28 January 2025",
     },
     {
       title:
         "Teams 101: How to boost teamwork using invites and permissions 👬",
-      author: "Learn Jira in 10 minutes 🔥",
+      author: "Learn contressa in 10 minutes 🔥",
       date: "28 January 2025",
     },
     {
       title: "Issues 101: How to write excellent tasks your team will love ✨",
-      author: "Learn Jira in 10 minutes 🔥",
+      author: "Learn contressa in 10 minutes 🔥",
       date: "28 January 2025",
     },
     {

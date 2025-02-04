@@ -2,8 +2,8 @@ import React from "react";
 
 function Activities() {
   const workPlaces = [
-    { id: 1, name: "Tarviz Digimart", logo: "/jira-logo-1.png" },
-    { id: 2, name: "Learn Jira in 10 minutes 👋", logo: "/jira-logo-2.png" },
+    { id: 1, name: "Tarviz Digimart", logo: "/contressa-logo-1.png" },
+    { id: 2, name: "Learn Contressa in 10 minutes 👋", logo: "/contressa-logo-2.png" },
   ];
 
   return (
@@ -15,9 +15,9 @@ function Activities() {
             key={place.id}
             className="flex items-center bg-white border-8 shadow-sm p-3"
           >
-            <img src={"/next.svg"} alt="Jira Logo" className="w-8 h-8 mr-3" />
+            <img src={"/next.svg"} alt="contressa Logo" className="w-8 h-8 mr-3" />
             <div>
-              <span className="text-sm text-gray-500">Jira</span>
+              <span className="text-sm text-gray-500">conressa</span>
               <h3 className="text-base font-medium text-blue-600 hover:underline">
                 {place.name}
               </h3>
