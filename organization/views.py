@@ -4,6 +4,7 @@ from .serializers import CustomUserSerializer
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsOwnProfile
 
+
 class CustomUserViewSet(viewsets.ModelViewSet):
     http_method_names = ['get','post','patch','delete']
     permission_classes = [IsAuthenticated, IsOwnProfile] 

@@ -114,18 +114,21 @@ AUTH_USER_MODEL = 'organization.CustomUser'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "OPTIONS": {"max_similarity": 0.7},  # Prevents passwords similar to user attributes
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {"min_length": 8},  # Requires at least 8 characters
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
+
 
 
 # Internationalization
@@ -222,14 +225,6 @@ LOGIN_URL = 'account_login'
 # Django Rest Auth Configuration
 REST_USE_JWT = True  # This is recommended when using dj-rest-auth with JWT tokens
 
-# Social Authentication Configuration
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'SCOPE': ['email'],
-        'AUTH_PARAMS': {'access_type': 'online'},
-        'OAUTH_PKCE_ENABLED': True,
-    }
-}
 
 SITE_ID = 1  # Default, required by django-allauth
 

@@ -22,7 +22,11 @@ from drf_yasg import openapi
 from django.http import JsonResponse
 from rest_framework.routers import DefaultRouter
 from organization.views import CustomUserViewSet
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from dj_rest_auth.registration.views import SocialLoginView
 
+class GoogleLogin(SocialLoginView):
+    adapter_class = GoogleOAuth2Adapter
 
 router = DefaultRouter()
 router.register(r'users', CustomUserViewSet)  
@@ -52,4 +56,5 @@ urlpatterns = [
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0),name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0),name='schema-redoc'),
     path('api/', include(router.urls)),
+    path('auth/social/login/', GoogleLogin.as_view(), name='google_login'),
 ]

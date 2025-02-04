@@ -1,7 +1,22 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, BaseUserManager, PermissionsMixin
 from base.models import BaseModel
 from django.db import models
 
+class CustomUserManager(BaseUserManager):
+    def create_user(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError("Email is required")
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+        return self.create_user(email, password, **extra_fields)
+    
 class CustomUser(AbstractUser, BaseModel):
     organization = models.ForeignKey('Organization', on_delete=models.SET_NULL, null=True, blank=True)
     department = models.ForeignKey('Department', on_delete=models.SET_NULL, null=True, blank=True)
@@ -10,6 +25,12 @@ class CustomUser(AbstractUser, BaseModel):
     profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
     phone_number = models.CharField(max_length=15, null=True, blank=True)
 
+    objects = CustomUserManager()
+
+    USERNAME_FIELD = "email"  # Use email instead of username
+    REQUIRED_FIELDS = []  # No need for username in required fields
+
+    
 class Organization(BaseModel):
     name = models.CharField(max_length=255, unique=True)
     superusers = models.ManyToManyField('CustomUser',related_name="superuser_organizations")
