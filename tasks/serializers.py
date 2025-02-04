@@ -10,7 +10,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'email']
+        fields = ['id', 'email']
 
 class ProjectSerializer(serializers.ModelSerializer):
     organization = OrganizationSerializer(read_only=True)  

@@ -24,7 +24,7 @@ from rest_framework.routers import DefaultRouter
 from organization.views import CustomUserViewSet
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from dj_rest_auth.registration.views import SocialLoginView
-
+from organization.views import CustomRegisterView
 class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
 
@@ -44,17 +44,15 @@ schema_view = get_schema_view(
     permission_classes=(permissions.AllowAny,)
 )
 
-def dummy_login_view(request):
-    return JsonResponse({"error": "Login via API only"}, status=400)
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('dj_rest_auth.urls')),  # Login, logout, password reset
-    path('auth/registration/', include('dj_rest_auth.registration.urls')),  # Registration
+    # path('auth/registration/', include('dj_rest_auth.registration.urls')),  # Registration
     path('auth/social/', include('allauth.socialaccount.urls')),  # Social Auth (Google, Facebook, etc.)
-    path('accounts/login/', dummy_login_view, name='account_login'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0),name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0),name='schema-redoc'),
     path('api/', include(router.urls)),
     path('auth/social/login/', GoogleLogin.as_view(), name='google_login'),
+    path('auth/registration/', CustomRegisterView.as_view()), # Override the registration URL
+
 ]

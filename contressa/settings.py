@@ -220,7 +220,6 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 
-LOGIN_URL = 'account_login'
 
 # Django Rest Auth Configuration
 REST_USE_JWT = True  # This is recommended when using dj-rest-auth with JWT tokens
@@ -246,3 +245,10 @@ FCM_DJANGO_SETTINGS = {
     "ONE_DEVICE_PER_USER": True,
     "DELETE_INACTIVE_DEVICES": True,
 }
+
+
+# Disable the username field
+ACCOUNT_USERNAME_REQUIRED = False  # Ensures the username is not required
+ACCOUNT_AUTHENTICATED_REMEMBER = True
+ACCOUNT_EMAIL_REQUIRED = True  # Make email required
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'  # Ensure email verification
