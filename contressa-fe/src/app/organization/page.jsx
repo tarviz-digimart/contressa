@@ -7,7 +7,7 @@ function page() {
   const users = [
     {
       name: 'Rohit Kumar',
-      email: 'rohit@victopialabs.com',
+      email: 'rohit@contressa.com',
       role: 'HR',
       location: 'Chennai',
       date: '7/29/2024',
@@ -15,7 +15,7 @@ function page() {
     },
     {
       name: 'Aswin',
-      email: 'aswin@victopialabs.com',
+      email: 'aswin@contressa.com',
       role: 'Manager',
       location: 'Mumbai',
       date: '7/29/2024',
@@ -23,7 +23,7 @@ function page() {
     },
     {
       name: 'Vishnu Kumar',
-      email: 'vishnu@victopialabs.com',
+      email: 'vishnu@contressa.com',
       role: 'Customer..',
       location: 'Chennai',
       date: '7/29/2024',
@@ -31,7 +31,7 @@ function page() {
     },
     {
       name: 'Vishnu Kumar',
-      email: 'vishnu@victopialabs.com',
+      email: 'vishnu@contressa.com',
       role: 'Designer',
       location: 'Chennai',
       date: '7/29/2024',
@@ -39,7 +39,7 @@ function page() {
     },
     {
       name: 'John Doe',
-      email: 'john@victopialabs.com',
+      email: 'john@contressa.com',
       role: 'Developer',
       location: 'Bangalore',
       date: '7/29/2024',
@@ -47,7 +47,7 @@ function page() {
     },
     {
       name: 'Jane Doe',
-      email: 'jane@victopialabs.com',
+      email: 'jane@contressa.com',
       role: 'HR',
       location: 'Chennai',
       date: '7/29/2024',
@@ -61,7 +61,7 @@ function page() {
         <h1 className="text-h1 my-4">Organization</h1>
         <div>
           <h2 className="text-b3 font-bold mb-2">Name</h2>
-          <StyledTextField className="w-72" placeholder="Victopia Labs" />
+          <StyledTextField className="w-72" placeholder="Contressa" />
         </div>
         <div className='mb-10'>
           <h2 className="text-b3 font-bold mt-4 mb-2">Description</h2>
