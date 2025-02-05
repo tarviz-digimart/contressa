@@ -3,18 +3,18 @@ import * as React from 'react';
 import { useState } from 'react';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
-import { Avatar, IconButton, Switch, TextField } from '@mui/material';
+import { Avatar, IconButton, Paper, Switch, TextField } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import StyledAccordion from '../level-1/WorkItemAccordion';
-import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
-import NotificationImportantIcon from '@mui/icons-material/NotificationImportant';
 import { getAvatarColor } from '../../utils/avatarColors';
 import RichTextEditor from '../level-1/RichTextEditor';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import AddLinkIcon from '@mui/icons-material/AddLink';
 import MoreTimeIcon from '@mui/icons-material/MoreTime';
+
 import SwitchTabs from '../level-1/workItemModal/SwitchTab';
+import BasicDateTimePicker from '../level-1/DataAndTimePicker';
 const currentuser = { username: 'Ebrahim' };
 const style = {
   position: 'absolute',
@@ -53,18 +53,24 @@ export default function WorkItemModal() {
     }
   };
 
+  const handleInput = () => {
+    setContent(editorRef.current.innerHTML);
+  };
+  const fileInputRef = React.useRef(null);
+  const editorRef = React.useRef(null);
+  const [content, setContent] = useState(''); // Stores HTML content
   return (
     <div>
       <Button onClick={handleOpen}>Open modal</Button>
       <Modal
-        // open={open}
-        open={true}
+        open={open}
+        // open={true}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
         sx={{ borderRadius: '5px', paddingBottom: '2rem' }}
       >
-        <div className="overflow-hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[95%] bg-white border-2 border-black shadow-xl p-4 h-[95%] flex flex-col gap-4">
+        <div className="overflow-hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[95%] bg-white border-2 border-black shadow-xl p-4 h-[90vh] flex flex-col gap-4">
           {/* title, notification and close */}
           <div className="flex justify-between mb-3 items-center">
             {/* Title */}
@@ -105,40 +111,48 @@ export default function WorkItemModal() {
               </IconButton>
             </div>
           </div>
-
+          {/* ------------------------------------------------------------------------------------------- */}
           {/* Add, DeadLine, Priority */}
           <div className="flex gap-8">
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
               <Button
                 variant="contained"
-                sx={{ textTransform: 'none' }}
+                onClick={() => fileInputRef.current.click()}
+                sx={{ textTransform: 'none', height: '3.5rem' }}
                 className="flex text-black bg-slate-200 gap-2 items-center"
               >
                 <AddLinkIcon /> <p>Add</p>
               </Button>
-              <Button
+              {/* <Button
                 variant="contained"
                 sx={{ textTransform: 'none' }}
                 className="flex text-black bg-slate-200 gap-2  items-center"
               >
                 <MoreTimeIcon /> <p>DeadLine</p>
-              </Button>
+              </Button> */}
+              <BasicDateTimePicker label="Pick DeadLine" />
             </div>
             <div className="flex items-center">
               <p className="font-bold">Priority</p> <Switch />
             </div>
           </div>
+          {/* ------------------------------------------------------------------------------------------- */}
 
-          <div className="flex gap-4 h-full w-full bg-pink-400 p-1">
+          <div className="flex gap-4 h-[80%] w-full p-1">
             {/* left div */}
-            <div className="w-full h-full flex flex-col gap-4 bg-green-300 overflow-y-auto">
-              <div className="shadow-md  bg-slate-100 p-5">
-                <p className="font-bold h-[12rem] text-slate-950">Description</p>
-                <div className="border-2">text for the description</div>
+            <div className="w-full h-full flex flex-col gap-4 overflow-y-auto overflow-x-hidden">
+              <div className="border-4 flex flex-col gap-2 p-4">
+                <p className="font-bold text-slate-950">Description</p>
+                <RichTextEditor
+                  handleInput={handleInput}
+                  fileInputRef={fileInputRef}
+                  setContent={setContent}
+                  editorRef={editorRef}
+                />
               </div>
-              <div className="shadow-md flex-1 flex flex-col bg-slate-100">
+              <div className="h-[100%] flex flex-col bg-white border-4 shadow-xl">
                 <SwitchTabs />
-                <div className="p-5 flex flex-col gap-2 h-full bg-blue-200">
+                <div className="p-5 flex flex-col gap-2 h-[100%] w-full">
                   <p className="font-bold ">Comments</p>
 
                   {/* comment typing area */}
@@ -165,9 +179,9 @@ export default function WorkItemModal() {
                   </div>
 
                   {/* comments area */}
-                  <div className="overflow-y-auto flex-1 max-h-full">
+                  <div className="w-full">
                     {commentsData?.map((item, index) => (
-                      <div key={index} className="flex gap-2">
+                      <div key={index} className="flex gap-5">
                         <Avatar sx={{ bgcolor: getAvatarColor(item.name) }}>
                           {item.name?.[0]}
                         </Avatar>
@@ -186,7 +200,7 @@ export default function WorkItemModal() {
             </div>
 
             {/* right div */}
-            <div className="h-full w-full bg-slate-200">
+            <div className="h-full w-full border-4 ">
               <StyledAccordion />
             </div>
           </div>

@@ -1,15 +1,14 @@
 import React, { useRef, useState } from 'react';
 import { Button } from '@mui/material';
 
-const RichTextEditor = () => {
-  const editorRef = useRef(null);
-  const fileInputRef = useRef(null);
-  const [content, setContent] = useState(''); // Stores HTML content
+const RichTextEditor = ({ handleInput, fileInputRef, setContent, editorRef }) => {
+  // const editorRef = useRef(null);
+  // const fileInputRef = useRef(null);
 
   // Handle typing in the editor
-  const handleInput = () => {
-    setContent(editorRef.current.innerHTML);
-  };
+  // const handleInput = () => {
+  //   setContent(editorRef.current.innerHTML);
+  // };
 
   // Handle pasted text (preserves only text, no styles)
   const handlePaste = (e) => {
@@ -39,10 +38,10 @@ const RichTextEditor = () => {
 
       if (file.type.startsWith('image/')) {
         element = `<img src="${fileURL}" alt="Image" 
-                      style="max-width:250px; height:auto; border-radius:8px; margin:5px; display:block;" />`;
+                        style="max-width:250px; height:auto; border-radius:8px; margin:5px; display:block;" />`;
       } else if (file.type.startsWith('video/')) {
         element = `<video src="${fileURL}" controls 
-                      style="max-width:250px; height:auto; border-radius:8px; margin:5px; display:block;"></video>`;
+                        style="max-width:250px; height:auto; border-radius:8px; margin:5px; display:block;"></video>`;
       }
 
       if (element) {
@@ -90,16 +89,6 @@ const RichTextEditor = () => {
         multiple
         onChange={handleFileSelect}
       />
-
-      {/* Add Media Button */}
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => fileInputRef.current.click()}
-        style={{ marginTop: '10px', textTransform: 'none' }}
-      >
-        Add Media
-      </Button>
     </div>
   );
 };
