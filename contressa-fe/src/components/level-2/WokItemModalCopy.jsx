@@ -153,7 +153,7 @@ export default function WorkItemModal() {
             <Panel defaultSize={30} minSize={20}>
               <div className="w-full overflow-y-auto">
                 <StyledAccordion />
-              </div>
+              </div>  
             </Panel>
           </PanelGroup>
         </div>

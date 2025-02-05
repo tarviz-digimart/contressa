@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
-const SwitchTabs = () => {
-  const [activeTab, setActiveTab] = useState('comments');
+const SwitchTabs = ({ activeTab, setActiveTab }) => {
 
   return (
     <div className="flex justify-center border-b border-gray-300">

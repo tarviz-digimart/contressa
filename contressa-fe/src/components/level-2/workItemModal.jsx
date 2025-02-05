@@ -11,21 +11,10 @@ import RichTextEditor from '../level-1/RichTextEditor';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import AddLinkIcon from '@mui/icons-material/AddLink';
-import MoreTimeIcon from '@mui/icons-material/MoreTime';
-
+import HistoryIcon from '@mui/icons-material/History';
 import SwitchTabs from '../level-1/workItemModal/SwitchTab';
 import BasicDateTimePicker from '../level-1/DataAndTimePicker';
 const currentuser = { username: 'Ebrahim' };
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: '80%',
-  bgcolor: 'background.paper',
-  boxShadow: 24,
-  p: 4,
-};
 
 export default function WorkItemModal() {
   const [open, setOpen] = useState(false);
@@ -34,9 +23,10 @@ export default function WorkItemModal() {
   const [title, setTitle] = React.useState('');
   const [comments, setComments] = useState('');
   const [important, setImportant] = useState(false);
-  const [selectedButton, setSelectedButton] = useState();
-
+  const [activeTab, setActiveTab] = useState('comments');
   const [commentsData, setCommentsData] = useState([]);
+  const [replies, setReplies] = useState({});
+  const [replyInputs, setReplyInputs] = useState({});
 
   //This is to handle the enter key press for comments.
   const handleKeyPress = (e) => {
@@ -53,6 +43,23 @@ export default function WorkItemModal() {
     }
   };
 
+  //This is for reply input field
+  const handleReplyKeyPress = (e, index) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      if (replyInputs[index]?.trim()) {
+        setReplies((prev) => ({
+          ...prev,
+          [index]: [
+            ...(prev[index] || []),
+            { name: currentuser.username, text: replyInputs[index] },
+          ],
+        }));
+        setReplyInputs((prev) => ({ ...prev, [index]: '' })); // Clear input after reply
+      }
+    }
+  };
+
   const handleInput = () => {
     setContent(editorRef.current.innerHTML);
   };
@@ -64,7 +71,6 @@ export default function WorkItemModal() {
       <Button onClick={handleOpen}>Open modal</Button>
       <Modal
         open={open}
-        // open={true}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
@@ -111,37 +117,31 @@ export default function WorkItemModal() {
               </IconButton>
             </div>
           </div>
-          {/* ------------------------------------------------------------------------------------------- */}
+
           {/* Add, DeadLine, Priority */}
           <div className="flex gap-8">
-            <div className="flex gap-2 items-center">
-              <Button
-                variant="contained"
-                onClick={() => fileInputRef.current.click()}
-                sx={{ textTransform: 'none', height: '3.5rem' }}
-                className="flex text-black bg-slate-200 gap-2 items-center"
-              >
-                <AddLinkIcon /> <p>Add</p>
-              </Button>
-              {/* <Button
-                variant="contained"
-                sx={{ textTransform: 'none' }}
-                className="flex text-black bg-slate-200 gap-2  items-center"
-              >
-                <MoreTimeIcon /> <p>DeadLine</p>
-              </Button> */}
+            <div className="flex gap-2 items-center ">
+              <div className="mt-2">
+                <Button
+                  variant="contained"
+                  onClick={() => fileInputRef.current.click()}
+                  sx={{ textTransform: 'none', height: '3.5rem' }}
+                  className="flex text-black bg-slate-200 gap-2 items-center"
+                >
+                  <AddLinkIcon /> <p>Add</p>
+                </Button>
+              </div>
               <BasicDateTimePicker label="Pick DeadLine" />
             </div>
             <div className="flex items-center">
               <p className="font-bold">Priority</p> <Switch />
             </div>
           </div>
-          {/* ------------------------------------------------------------------------------------------- */}
 
           <div className="flex gap-4 h-[80%] w-full p-1">
             {/* left div */}
-            <div className="w-full h-full flex flex-col gap-4 overflow-y-auto overflow-x-hidden">
-              <div className="border-4 flex flex-col gap-2 p-4">
+            <div className="w-full h-full flex flex-col gap-4 overflow-y-auto overflow-x-hidden min-w-[20rem]">
+              <div className="border-2 border-slate-500 flex flex-col gap-2 p-4">
                 <p className="font-bold text-slate-950">Description</p>
                 <RichTextEditor
                   handleInput={handleInput}
@@ -150,57 +150,116 @@ export default function WorkItemModal() {
                   editorRef={editorRef}
                 />
               </div>
-              <div className="h-[100%] flex flex-col bg-white border-4 shadow-xl">
-                <SwitchTabs />
+              <div className="flex-1 flex flex-col bg-white border-2 border-slate-500 shadow-xl ">
+                <SwitchTabs activeTab={activeTab} setActiveTab={setActiveTab} />
                 <div className="p-5 flex flex-col gap-2 h-[100%] w-full">
-                  <p className="font-bold ">Comments</p>
-
-                  {/* comment typing area */}
-                  <div className="flex gap-2 items-start">
-                    <Avatar sx={{ bgcolor: getAvatarColor(currentuser.username) }}>
-                      {currentuser.username?.[0]}
-                    </Avatar>
-                    <TextField
-                      sx={{ width: '100%' }}
-                      id="outlined-multiline-static"
-                      placeholder="comments..."
-                      multiline
-                      value={comments}
-                      onChange={(e) => setComments(e.target.value)}
-                      onKeyDown={handleKeyPress}
-                      InputProps={{
-                        sx: {
-                          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                            border: '2px solid black', // Show a distinct border when focused
-                          },
-                        },
-                      }}
-                    />
-                  </div>
-
-                  {/* comments area */}
-                  <div className="w-full">
-                    {commentsData?.map((item, index) => (
-                      <div key={index} className="flex gap-5">
-                        <Avatar sx={{ bgcolor: getAvatarColor(item.name) }}>
-                          {item.name?.[0]}
+                  {activeTab === 'comments' && (
+                    <>
+                      <p className="font-bold">Comments</p>
+                      {/* Comment Input */}
+                      <div className="flex gap-2 items-start">
+                        <Avatar sx={{ bgcolor: getAvatarColor(currentuser.username) }}>
+                          {currentuser.username?.[0]}
                         </Avatar>
-                        <div>
-                          <div className="flex gap-5">
-                            <p className="font-bold">{item.name}</p>
-                            <p className="font-bold">{item.time}</p>
-                          </div>
-                          <p className="w-fit break-words overflow-wrap">{item.comments}</p>
-                        </div>
+                        <TextField
+                          sx={{ width: '100%' }}
+                          id="outlined-multiline-static"
+                          placeholder="Write a comment..."
+                          multiline
+                          value={comments}
+                          onChange={(e) => setComments(e.target.value)}
+                          onKeyDown={handleKeyPress}
+                          InputProps={{
+                            sx: {
+                              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                border: '2px solid black',
+                              },
+                            },
+                          }}
+                        />
                       </div>
-                    ))}
-                  </div>
+
+                      {/* Comments List */}
+                      <div className="w-full gap-5 flex flex-col">
+                        {commentsData?.map((item, index) => (
+                          <div key={index} className="flex flex-col gap-2">
+                            {/* Comment */}
+                            <div className="flex gap-2">
+                              <Avatar sx={{ bgcolor: getAvatarColor(item.name) }}>
+                                {item.name?.[0]}
+                              </Avatar>
+                              <div>
+                                <div className="flex gap-5">
+                                  <p className="font-bold">{item.name}</p>
+                                  <p className="font-bold text-gray-500">{item.time}</p>
+                                </div>
+                                <p className="w-fit break-words">{item.comments}</p>
+                                {/* Reply Button */}
+                                <button
+                                  className="text-blue-500 text-sm"
+                                  onClick={() =>
+                                    setReplyInputs((prev) => ({
+                                      ...prev,
+                                      [index]: prev[index] !== undefined ? undefined : '', // Toggle reply input
+                                    }))
+                                  }
+                                >
+                                  Reply
+                                </button>
+                              </div>
+                            </div>
+
+                            {/* Reply Input */}
+                            {replyInputs[index] !== undefined && (
+                              <div className="flex gap-2 ml-10">
+                                <Avatar sx={{ bgcolor: getAvatarColor(currentuser.username) }}>
+                                  {currentuser.username?.[0]}
+                                </Avatar>
+                                <TextField
+                                  sx={{ width: '100%' }}
+                                  placeholder="Write a reply..."
+                                  multiline
+                                  value={replyInputs[index] || ''}
+                                  onChange={(e) =>
+                                    setReplyInputs((prev) => ({ ...prev, [index]: e.target.value }))
+                                  }
+                                  onKeyDown={(e) => handleReplyKeyPress(e, index)}
+                                />
+                              </div>
+                            )}
+
+                            {/* Replies */}
+                            {replies[index]?.length > 0 && (
+                              <div className="ml-10 flex flex-col gap-2">
+                                {replies[index].map((reply, replyIndex) => (
+                                  <div key={replyIndex} className="flex gap-2">
+                                    <Avatar sx={{ bgcolor: getAvatarColor(reply.name) }}>
+                                      {reply.name?.[0]}
+                                    </Avatar>
+                                    <div>
+                                      <p className="font-bold">{reply.name}</p>
+                                      <p className="w-fit break-words">{reply.text}</p>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                  {activeTab === 'history' && (
+                    <p className="font-bold ">
+                      History <HistoryIcon />
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
 
             {/* right div */}
-            <div className="h-full w-full border-4 ">
+            <div className="h-full w-full border-2 border-slate-500 ">
               <StyledAccordion />
             </div>
           </div>

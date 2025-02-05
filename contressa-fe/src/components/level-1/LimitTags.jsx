@@ -11,7 +11,7 @@ export default function LimitTags() {
         id="multiple-limit-tags"
         options={names}
         getOptionLabel={(option) => option.name}
-        // defaultValue={[names[13], names[12], names[11]]}
+        // defaultValue={[names[13], names[12], names[11]]} //This is to add default values.
         renderInput={(params) => <TextField {...params} label="" placeholder="Select Assigner" />}
         sx={{
           height: '50px',
@@ -25,6 +25,14 @@ export default function LimitTags() {
           },
           '& .MuiSelect-select': {
             paddingLeft: '8px', // Optional: Adds padding if you need space from the left edge
+          },
+          '& input': {
+            marginLeft: '-7px', // Removes extra margin for the placeholder
+            padding: '0px', // Adjust padding to align text properly
+          },    
+          '& input::placeholder': {
+            opacity: 1, // Ensures the placeholder is fully visible
+            color: '#64748b', // Keeps the placeholder color the same
           },
         }}
       />
