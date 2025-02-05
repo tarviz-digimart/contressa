@@ -13,7 +13,6 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { useRouter } from "next/navigation";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew"; // ✅ Import the icon
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import fontStyles from "@/styles/fontStyles";
 
 const ProfilePopup = () => {
   const [anchorEl, setAnchorEl] = useState(null);
