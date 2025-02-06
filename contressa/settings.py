@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 from dotenv import load_dotenv
 import os
+from corsheaders.defaults import default_headers
+from datetime import timedelta
 
 load_dotenv()
 
@@ -42,32 +44,25 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'drf_yasg',
     'rest_framework',
-    'rest_framework.authtoken',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.microsoft',
-    'dj_rest_auth',  # For REST API views
-    'dj_rest_auth.registration',  # For user registration via REST API
     'fcm_django',
     'base',
     'tasks',
-    'organization'
+    'organization',
+    'authentication',
+    'attendance',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'allauth.account.middleware.AccountMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'simple_history.middleware.HistoryRequestMiddleware',
+    'contressa.custom_middlewares.OrganizationContextMiddleware',
 ]
-
 ROOT_URLCONF = 'contressa.urls'
 
 TEMPLATES = [
@@ -88,9 +83,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'contressa.wsgi.application'
 
-AUTHENTICATION_BACKENDS = (
-    'allauth.account.auth_backends.AuthenticationBackend',
-)
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',  # Use simplejwt
+    ),
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),  # Set access token lifetime
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7), # Set refresh token lifetime
+    'ROTATE_REFRESH_TOKENS': True, # this is optional
+    # ... other simplejwt settings (see documentation)
+}
+
+
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
@@ -108,7 +114,7 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
-AUTH_USER_MODEL = 'organization.CustomUser'
+AUTH_USER_MODEL = 'base.CustomUser'
  
 
 
@@ -220,7 +226,11 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 
-
+CORS_ALLOW_HEADERS = (
+    *default_headers,
+    'Branch',
+    "Organization",
+)
 # Django Rest Auth Configuration
 REST_USE_JWT = True  # This is recommended when using dj-rest-auth with JWT tokens
 
@@ -247,11 +257,16 @@ FCM_DJANGO_SETTINGS = {
 }
 
 
-# Disable the username field
-ACCOUNT_USERNAME_REQUIRED = False  # Ensures the username is not required
-ACCOUNT_AUTHENTICATED_REMEMBER = True
-ACCOUNT_EMAIL_REQUIRED = True  # Make email required
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'  # Ensure email verification
+# # Disable the username field
+# ACCOUNT_USERNAME_REQUIRED = False  # Ensures the username is not required
+# ACCOUNT_AUTHENTICATED_REMEMBER = True
+# ACCOUNT_EMAIL_REQUIRED = True  # Make email required
+# ACCOUNT_EMAIL_VERIFICATION = 'mandatory'  # Ensure email verification
+
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
 
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 SENDGRID_SENDER = os.getenv('SENDGRID_SENDER')
