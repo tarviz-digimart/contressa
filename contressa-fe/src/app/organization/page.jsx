@@ -58,13 +58,13 @@ function page() {
     <div className="ms-64 xl:ms-80 flex justify-center">
       <Sidebar />
       <div className="flex flex-col w-full p-4">
-        <h1 className="text-h1 my-4">Organization</h1>
+        <p className="text-h1 my-4">Organization</p>
         <div>
           <h2 className="text-b3 font-bold mb-2">Name</h2>
           <StyledTextField className="w-72" placeholder="Contressa" />
         </div>
         <div className='mb-10'>
-          <h2 className="text-b3 font-bold mt-4 mb-2">Description</h2>
+          <p className="text-b3 font-bold mt-4 mb-2">Description</p>
           <StyledTextField className="w-72" placeholder="Add Organization Description" />
         </div>
         <UserTable users={users} />
