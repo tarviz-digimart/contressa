@@ -7,7 +7,7 @@ export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
-    <aside className="w-64 bg-white border-r min-h-screen p-4 fixed left-0 top-0">
+    <aside className="w-64 bg-white border-r min-h-screen p-4 fixed left-0">
       {/* Dropdown Selector */}
       <div className="relative w-full">
         <button className="w-full flex items-center justify-between px-4 py-2 border rounded-md bg-gray-100">

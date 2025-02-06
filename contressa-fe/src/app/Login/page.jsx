@@ -25,7 +25,7 @@ const Login = () => {
         router.push('/dashboard'); // Redirect on success
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed');
+      // setError(err.response?.data?.message || 'Login failed');
     } finally {
       setLoading(false);
     }
@@ -68,6 +68,7 @@ const Login = () => {
           {error && <p className="text-red-500 text-sm">{error}</p>}
 
           <Button
+            onClick={() => router.push('/organization')}
             type="submit"
             fullWidth
             variant="contained"
