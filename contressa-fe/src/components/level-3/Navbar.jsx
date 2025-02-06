@@ -33,7 +33,7 @@ function Navbar() {
   }, []);
 
   return (
-    <nav className="bg-white border-gray-200 dark:bg-gray-900 fixed w-full z-10 top-0">
+    <nav className="bg-white border-gray-200 dark:bg-gray-900 w-full">
       <div className="flex flex-wrap items-center justify-between mx-auto p-4">
         {/* Left Side */}
         <div
@@ -53,11 +53,10 @@ function Navbar() {
           ].map((item) => (
             <p
               key={item.path}
-              className={`cursor-pointer ${
-                pathname === item.path
-                  ? 'text-blue-700 font-medium'
-                  : 'text-gray-900 hover:text-blue-700'
-              }`}
+              className={`cursor-pointer ${pathname === item.path
+                ? 'text-blue-700 font-medium'
+                : 'text-gray-900 hover:text-blue-700'
+                }`}
               onClick={() => router.push(item.path)}
             >
               {item.name}

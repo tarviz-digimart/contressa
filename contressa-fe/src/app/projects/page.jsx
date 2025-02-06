@@ -9,6 +9,7 @@ import AddIcon from '@mui/icons-material/Add';
 import ChartColumn from '@/components/level-1/ChartColumn';
 import {
   DndContext,
+  DragOverlay,
   MouseSensor,
   PointerSensor,
   pointerWithin,
@@ -16,6 +17,7 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
+import WorkItemCard from '@/components/level-1/WorkItemCard';
 
 function Page() {
   const sensors = useSensors(
@@ -113,6 +115,7 @@ function Page() {
       ],
     },
   ]);
+  const [activeItem, setActiveItem] = useState(null);
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
@@ -149,14 +152,30 @@ function Page() {
 
   const handleDragStart = (event) => {
     console.log('Drag started:', event);
+    columns.forEach((column) => {
+      const item = column.items.find((item) => item.taskId === event.active.id);
+      if (item) {
+        setActiveItem(item);
+      }
+    });
   };
 
   const handleDragOver = (event) => {
     console.log('Drag over:', event);
   };
 
+  const handleAddColumn = () => {
+    const newColumn = {
+      id: `${columns.length + 1}`,
+      name: 'New Column',
+      items: [],
+    };
+
+    setColumns([...columns, newColumn]);
+  }
+
   return (
-    <div className="flex flex-col items-start justify-start p-10 h-full w-full gap-y-6">
+    <div className="flex flex-col items-start justify-start px-10 py-4 w-full gap-y-6 h-full overflow-y-auto">
       <Typography sx={{ fontWeight: 'bold' }}>KM Construction</Typography>
 
       <TextField
@@ -175,30 +194,61 @@ function Page() {
       <AutoCompleteWithChips />
 
       <div className="flex flex-row justify-between w-full">
-        <div className="flex gap-x-2">
-          <Button variant="outlined" size="small" sx={{ textTransform: 'none' }}>
+        <div className="flex gap-x-2 items-center">
+          <Button
+            variant="outlined"
+            size="small"
+            sx={{
+              textTransform: 'none',
+              borderColor: '#D1D5DB',
+              color: '#111827',
+              fontSize: '14px',
+            }}
+          >
             Priority
           </Button>
-          <Button variant="outlined" size="small" sx={{ textTransform: 'none' }}>
+
+          <Button
+            variant="outlined"
+            size="small"
+            sx={{
+              textTransform: 'none',
+              borderColor: '#D1D5DB',
+              color: '#111827',
+              fontSize: '14px',
+            }}
+          >
             Overdue
           </Button>
-          <Button variant="outlined" size="small" sx={{ textTransform: 'none' }}>
+
+          <Button
+            variant="outlined"
+            size="small"
+            sx={{
+              textTransform: 'none',
+              borderColor: '#D1D5DB',
+              color: '#111827',
+              fontSize: '14px',
+            }}
+          >
             Deadline
           </Button>
         </div>
 
         <div className="flex justify-center items-center gap-x-2">
-          <BasicSelect placeholder="Type" />
+          <BasicSelect placeholder="Type" size="small" />
           <Button
             variant="outlined"
             size="small"
             startIcon={<AddIcon />}
             sx={{
-              backgroundColor: 'transparent',
-              padding: '6px 12px',
-              display: 'inline-flex',
               flexShrink: 0, // Prevent the button from stretching
+              textTransform: 'none',
+              borderColor: '#D1D5DB',
+              color: '#111827',
+              fontSize: '14px',
             }}
+            onClick={handleAddColumn}
           >
             Add Column
           </Button>
@@ -211,7 +261,7 @@ function Page() {
         sensors={sensors}
         onDragOver={handleDragOver}
       >
-        <div className="flex flex-row w-full h-full gap-x-10">
+        <div className="flex flex-row flex-grow justify-start w-full gap-5 overflow-x-auto">
           {columns.map((column) => (
             <ChartColumn
               key={column.id}
@@ -221,6 +271,11 @@ function Page() {
             />
           ))}
         </div>
+        <DragOverlay>
+          {activeItem && (
+            <WorkItemCard {...activeItem} />
+          )}
+        </DragOverlay>
       </DndContext>
     </div>
   );

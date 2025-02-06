@@ -8,8 +8,10 @@ export default function RootLayout({ children }) {
       <head>
         <title>Contessa</title>
       </head>
-      <body className={`font-sans antialiased h-screen`}>
-        {children}</body>
+      <body className="font-sans antialiased h-screen flex flex-col">
+        <Navbar />
+        {children}
+      </body>
     </html>
   );
 }
