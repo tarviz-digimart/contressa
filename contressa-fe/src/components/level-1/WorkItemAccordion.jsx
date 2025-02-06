@@ -8,11 +8,52 @@ import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Divider from '@mui/material/Divider';
 import BasicSelect from './BasicSelect';
+import VerticalLinearStepper from './workItemModal/VerticalStepper';
+import LimitTags from './LimitTags';
+import { TextField } from '@mui/material';
 
 const DropdownField = ({ label, placeholder, data, onChange, avatar }) => (
-  <div className="flex gap-2 items-center w-full">
-    <p className="font-bold text-[15px] w-[15rem]">{label}</p>
+  <div className="flex gap-2 items-center w-full ">
+    <p className="font-bold text-lg w-[15rem]">{label}</p>
     <BasicSelect data={data} placeholder={placeholder} avatar={avatar} onChange={onChange} />
+  </div>
+);
+
+const MultiSelect = () => (
+  <div className="flex gap-2 items-center w-full">
+    <p className="font-bold text-lg w-[15rem]">Assignee</p>
+    <LimitTags />
+  </div>
+);
+const CustomTextField = () => (
+  <div className="flex gap-2 items-center w-full">
+    <p className="font-bold text-lg w-[15rem]">Project Name</p>
+    <div className="w-full">
+      <TextField
+        fullWidth
+        placeholder="Enter Project Name"
+        InputProps={{
+          sx: {
+            fontWeight: 'bold',
+            fontSize: '18px',
+          },
+        }}
+        sx={{
+          height: '50px',
+          fontSize: 15,
+          border: 'none', // Remove border completely
+          '& .MuiOutlinedInput-notchedOutline': {
+            borderColor: 'transparent', // Make the outline transparent
+          },
+          '&:hover .MuiOutlinedInput-notchedOutline': {
+            borderColor: 'transparent', // Remove the border on hover
+          },
+          '& .MuiSelect-select': {
+            paddingLeft: '8px', // Optional: Adds padding if you need space from the left edge
+          },
+        }}
+      />
+    </div>
   </div>
 );
 
@@ -29,8 +70,8 @@ export default function StyledAccordion() {
   };
 
   const data = [
-    { id: 1, value: 10 },
-    { id: 2, value: 20 },
+    { id: 1, value: 'TCS' },
+    { id: 2, value: 'Tata' },
   ];
   const labelData = [
     { id: 1, value: 'Cleaning' },
@@ -44,36 +85,24 @@ export default function StyledAccordion() {
 
   return (
     <div>
-      <Accordion defaultExpanded>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1-content"
-          id="panel1-header"
-        >
-          <Typography component="span" sx={{ fontWeight: 'bold', fontSize: '18px' }}>
+      <div className="p-5">
+        <div>
+          <p className="font-bold text-lg" component="span">
             Details
-          </Typography>
-        </AccordionSummary>
+          </p>
+        </div>
         <Divider />
-        <AccordionDetails sx={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+        <div className="flex flex-col gap-4 pt-4">
+          <CustomTextField />
           <DropdownField
             label="Assigner"
             placeholder="Select Assigner"
-            value={selections.assignee}
-            data={assigneeData}
-            onChange={(value) => handleSelectionChange('assignee', value)}
-            avatar
-          />
-
-          <DropdownField
-            label="Assignee"
-            placeholder="Select Assignee"
             value={selections.assignedTo}
             data={assigneeData}
             onChange={(value) => handleSelectionChange('assignedTo', value)}
             avatar
           />
-
+          <MultiSelect />
           <DropdownField
             label="Parent"
             placeholder="Select Parent"
@@ -89,8 +118,12 @@ export default function StyledAccordion() {
             data={labelData}
             onChange={(value) => handleSelectionChange('label', value)}
           />
-        </AccordionDetails>
-      </Accordion>
+          <Divider />
+          <div className="flex items-center justify-center">
+            <VerticalLinearStepper />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
