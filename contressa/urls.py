@@ -20,14 +20,19 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework.routers import DefaultRouter
-from organization.views import CustomUserViewSet
 from authentication.views import OTPLoginView, OTPVerifyView, ResendOTPView
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
+from organization.views import OrganizationViewSet, LocationViewSet, BranchViewSet, DepartmentViewSet, DesignationViewSet
 
 
 router = DefaultRouter()
-router.register(r'users', CustomUserViewSet)  
+router.register(r'organizations', OrganizationViewSet)
+router.register(r'locations', LocationViewSet)
+router.register(r'branches', BranchViewSet)
+router.register(r'departments', DepartmentViewSet)
+router.register(r'designations', DesignationViewSet)
+
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -42,7 +47,8 @@ schema_view = get_schema_view(
     permission_classes=(permissions.AllowAny,)
 )
 
-        
+
+     
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0),name='schema-swagger-ui'),
