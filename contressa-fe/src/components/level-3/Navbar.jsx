@@ -8,8 +8,9 @@ import { FaRegUserCircle } from 'react-icons/fa';
 import ProfilePopup from '../level-2/ProfilePopup';
 
 function Navbar() {
-  const router = useRouter();
   const pathname = usePathname();
+  const isRoot = pathname === '/';
+  const router = useRouter();
   const [isProfileOpen, setProfileOpen] = useState(false);
   const [isNotifOpen, setNotifOpen] = useState(false);
   const profileRef = useRef(null);
@@ -31,9 +32,12 @@ function Navbar() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
+  console.log('ROOT', isRoot);
+  if (isRoot) {
+    return <></>;
+  }
   return (
-    <nav className="bg-white border-gray-200 dark:bg-gray-900 w-full">
+    <nav className="bg-white fixed top-0 z-10  border-gray-200 dark:bg-gray-900 w-full">
       <div className="flex flex-wrap items-center justify-between mx-auto p-4">
         {/* Left Side */}
         <div
@@ -41,7 +45,7 @@ function Navbar() {
           onClick={() => router.push('/')}
         >
           <MdOutlineDashboard size={24} />
-          <p className="text-lg font-semibold">Task Manager</p>
+          <p className="text-lg font-semibold">Task Manager asdfasdf</p>
         </div>
 
         {/* Right Side - Navigation Links */}
@@ -53,10 +57,11 @@ function Navbar() {
           ].map((item) => (
             <p
               key={item.path}
-              className={`cursor-pointer ${pathname === item.path
-                ? 'text-blue-700 font-medium'
-                : 'text-gray-900 hover:text-blue-700'
-                }`}
+              className={`cursor-pointer ${
+                pathname === item.path
+                  ? 'text-blue-700 font-medium'
+                  : 'text-gray-900 hover:text-blue-700'
+              }`}
               onClick={() => router.push(item.path)}
             >
               {item.name}
