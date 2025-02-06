@@ -1,13 +1,11 @@
-import WorkItemModal from '@/components/level-2/workItemModal';
-// import WorkItemModal from '@/components/level-2/WokItemModalCopy';
-import React from 'react';
-
+"use client"
+import React from 'react'
 function page() {
   return (
     <div>
-      <WorkItemModal />
+      {/* < RequestsPage/> */}
     </div>
-  );
+  )
 }
 
-export default page;
+export default page

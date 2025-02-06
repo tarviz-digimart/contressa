@@ -6,6 +6,7 @@ import { MdOutlineDashboard } from 'react-icons/md';
 import { IoNotificationsOutline } from 'react-icons/io5';
 import { FaRegUserCircle } from 'react-icons/fa';
 import ProfilePopup from '../level-2/ProfilePopup';
+import LoginLogoutPopup from './LoginLogoutPopup';
 
 function Navbar() {
   const router = useRouter();
@@ -13,6 +14,17 @@ function Navbar() {
   const [isProfileOpen, setProfileOpen] = useState(false);
   const [isNotifOpen, setNotifOpen] = useState(false);
   const profileRef = useRef(null);
+  const [isLoginOpen, setLoginOpen] = useState(false); // Add this state
+  const [Login, setLogin] = useState(false);
+
+  const handleLoginClose = () => {
+    setLoginOpen(false);
+    setLogin(true);
+  };
+
+  const handleLogin = () => {
+    setLogin(false);
+  };
 
   const handleClose = () => {
     setNotifOpen((prev) => !prev);
@@ -50,6 +62,7 @@ function Navbar() {
             { name: 'Organization', path: '/organization' },
             { name: 'Projects', path: '/projects' },
             { name: 'Dashboard', path: '' },
+            { name: 'Requests', path: '/requests' },
           ].map((item) => (
             <p
               key={item.path}
@@ -66,6 +79,12 @@ function Navbar() {
         </div>
 
         <div className="flex items-center space-x-6 relative">
+          <button
+            onClick={() => setLoginOpen(true)}
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
+          >
+            login
+          </button>
           {/* Notification Icon */}
           <div className="relative cursor-pointer" onClick={() => setNotifOpen(!isNotifOpen)}>
             <IoNotificationsOutline size={24} />
@@ -83,6 +102,12 @@ function Navbar() {
           {isProfileOpen && (
             <ProfilePopup ref={profileRef} isOpen={isProfileOpen} handleClose={handleClose} />
           )}
+          <LoginLogoutPopup
+            open={isLoginOpen}
+            handleClose={handleLoginClose}
+            handleLogin={handleLogin}
+            Login={Login}
+          />
         </div>
       </div>
     </nav>

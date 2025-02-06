@@ -1,4 +1,4 @@
-import Sidebar from '@/components/level-3/organization/SideBar';
+import Sidebar from '@/components/level-3/SideBar';
 import UserTable from '@/components/level-3/organization/UserTable';
 import React from 'react';
 import StyledTextField from '@/components/level-1/StyledTextField';
@@ -54,10 +54,20 @@ function page() {
       admin: false,
     },
   ];
+
+  const menuItems = [
+    { name: 'Members', route: '/members' },
+    { name: 'Pending requests', route: '/pending-requests' },
+    { name: 'Inventory', route: '/inventory' },
+    { name: 'Sales', route: '/sales' },
+    { name: 'Invoice', route: '/invoice' },
+    { name: 'Performance', route: '/performance' },
+  ];
+
   return (
-    <div className="ms-64 xl:ms-80 flex justify-center">
-      <Sidebar />
-      <div className="flex flex-col w-full p-4">
+    <div className='flex'>
+      <Sidebar menuItems={menuItems} />
+      <div className="flex flex-col w-full p-4 ms-64">
         <h1 className="text-h1 my-4">Organization</h1>
         <div>
           <h2 className="text-b3 font-bold mb-2">Name</h2>
