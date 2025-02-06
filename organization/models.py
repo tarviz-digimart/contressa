@@ -4,6 +4,7 @@ from django.conf import settings
 
 class Organization(BaseModel):
     name = models.CharField(max_length=255, unique=True)
+    description = models.TextField(blank=True, null=True)
     superusers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="superuser_organizations")
     employees = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name="organizations")
 
@@ -14,10 +15,19 @@ class Location(BaseModel):
 class Branch(BaseModel):
     name = models.CharField(max_length=255)
     location = models.ForeignKey('Location', on_delete=models.CASCADE, related_name="branches")  
+    branch_admins = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, blank=True, related_name="managed_branches",
+        help_text="Users who are responsible for managing this branch."
+    )
 
+    
 class Department(BaseModel):
     name = models.CharField(max_length=255)
     branch = models.ForeignKey('Branch', on_delete=models.CASCADE, related_name="departments")  
+    department_heads = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, blank=True, related_name="managed_departments",
+        help_text="Users who are responsible for managing this department."
+    )
 
 class Designation(BaseModel):
     title = models.CharField(max_length=255)
