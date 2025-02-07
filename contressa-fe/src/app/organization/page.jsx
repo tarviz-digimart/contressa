@@ -74,7 +74,7 @@ function page() {
           <StyledTextField className="w-72" placeholder="Contressa" />
         </div>
         <div className='mb-10'>
-          <h2 className="text-b3 font-bold mt-4 mb-2">Description</h2>
+          <p className="text-b3 font-bold mt-4 mb-2">Description</p>
           <StyledTextField className="w-72" placeholder="Add Organization Description" />
         </div>
         <UserTable users={users} />

@@ -7,9 +7,9 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Divider from '@mui/material/Divider';
-import BasicSelect from './BasicSelect';
-import VerticalLinearStepper from './workItemModal/VerticalStepper';
-import LimitTags from './LimitTags';
+import BasicSelect from '../BasicSelect';
+import VerticalLinearStepper from './VerticalStepper';
+import LimitTags from '../LimitTags';
 import { TextField } from '@mui/material';
 
 const DropdownField = ({ label, placeholder, data, onChange, avatar }) => (
@@ -57,7 +57,7 @@ const CustomTextField = () => (
   </div>
 );
 
-export default function StyledAccordion() {
+export default function WorkItemAccordion() {
   const [selections, setSelections] = useState({
     assignee: '',
     assignedTo: '',

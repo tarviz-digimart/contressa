@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import { Avatar, IconButton, Paper, Switch, TextField } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import StyledAccordion from '../level-1/WorkItemAccordion';
+import StyledAccordion from '../level-1/workItemModal/WorkItemAccordion';
 import { getAvatarColor } from '../../utils/avatarColors';
 import RichTextEditor from '../level-1/RichTextEditor';
 import NotificationsIcon from '@mui/icons-material/Notifications';

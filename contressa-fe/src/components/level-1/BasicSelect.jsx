@@ -6,7 +6,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { Avatar } from '@mui/material';
 import { getAvatarColor } from '@/utils/avatarColors';
 
-export default function BasicSelect({ data, onChange, onClose, placeholder, avatar = false }) {
+export default function BasicSelect({ data, onChange, onClose, placeholder, avatar = false, size }) {
   const [selectedData, setSelectedData] = React.useState('None');
 
   const handleChange = (event) => {
@@ -20,7 +20,7 @@ export default function BasicSelect({ data, onChange, onClose, placeholder, avat
   };
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ width: '100%' }} size={size}>
       <FormControl fullWidth>
         <Select
           id="demo-simple-select"

@@ -19,6 +19,7 @@ export default function AutoCompleteWithChips() {
                     ...newValue,
                 ]);
             }}
+            fullWidth
             options={top100Films}
             getOptionLabel={(option) => option.title}
             renderTags={(tagValue, getTagProps) =>

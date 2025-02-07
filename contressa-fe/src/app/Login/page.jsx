@@ -38,17 +38,35 @@ const Login = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-        <h2 className="text-h1 text-center mb-4">Login to Contressa</h2>
+        <p className="text-h1 text-center mb-4">Login To Contressa</p>
         <form onSubmit={handleLogin} className="space-y-4">
-          <p className="text-b3 font-medium">Email</p>
           <TextField
             size="small"
             label="Email"
             fullWidth
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderColor: 'black', // Default border color
+                },
+                '&:hover fieldset': {
+                  borderColor: 'black', // Border color on hover
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'black', // Border color when focused
+                },
+              },
+              '& .MuiInputLabel-root': {
+                color: 'black', // Default label color
+              },
+              '& .MuiInputLabel-root.Mui-focused': {
+                color: 'black', // Label color when focused
+              },
+            }}
           />
-          <p className="text-b3 font-medium">Password</p>
+
           <TextField
             size="small"
             label="Password"
@@ -56,13 +74,48 @@ const Login = () => {
             fullWidth
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderColor: 'black', // Default border color
+                },
+                '&:hover fieldset': {
+                  borderColor: 'black', // Border color on hover
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'black', // Border color when focused
+                },
+              },
+              '& .MuiInputLabel-root': {
+                color: 'black', // Default label color
+              },
+              '& .MuiInputLabel-root.Mui-focused': {
+                color: 'black', // Label color when focused
+              },
+            }}
           />
-          <div className="flex justify-between">
-            <div className="flex">
+          <div className="flex justify-between items-center ">
+            <div className="flex w-full">
               <Checkbox />
               <p className="text-b2 mt-3 -ms-2">Remember me</p>
             </div>
-            <p className="text-b2 mt-3">Forgot password?</p>
+            <div className="w-full flex justify-end mb-2 pr-2">
+              <Button
+                variant="text"
+                className="text-b2 mt-3 underline normal-case"
+                sx={{
+                  color:'black',
+                  textTransform: 'none',
+                  textDecoration: 'underline !important', // Force underline
+                  '&:hover': {
+                    backgroundColor: 'inherit !important', // No background change on hover
+                    boxShadow: 'none', // No shadow on hover
+                  },
+                }}
+              >
+                Forgot password?
+              </Button>
+            </div>
           </div>
 
           {error && <p className="text-red-500 text-sm">{error}</p>}
@@ -72,6 +125,7 @@ const Login = () => {
             type="submit"
             fullWidth
             variant="contained"
+            className="normal-case"
             sx={{
               backgroundColor: '#5855d6',
               '&:hover': { backgroundColor: '#4843c4' },
@@ -81,36 +135,6 @@ const Login = () => {
             {loading ? 'Logging in...' : 'Login'}
           </Button>
         </form>
-
-        <div className="text-center mt-4">
-          <p>
-            Don’t have an account?{' '}
-            <a href="/signup" className="text-[#5855d6]">
-              Signup
-            </a>
-          </p>
-        </div>
-
-        <div className="flex items-center justify-center my-4">
-          <hr className="w-1/3 border-gray-300" />
-          <p className="mx-2 text-gray-600">or</p>
-          <hr className="w-1/3 border-gray-300" />
-        </div>
-
-        <Button
-          fullWidth
-          variant="outlined"
-          onClick={handleGoogleLogin}
-          className="flex items-center justify-center text-black text-b1 font-semibold border-black"
-        >
-          <img
-            width="20"
-            src="https://img.icons8.com/color/48/google-logo.png"
-            alt="google-logo"
-            className="mr-2"
-          />
-          Sign in with Google
-        </Button>
       </div>
     </div>
   );

@@ -1,13 +1,14 @@
 from django.db import models
 from base.models import BaseModel
-from organization.models import CustomUser, Organization
+from organization.models import Organization
+from django.conf import settings
 
 class Project(BaseModel):
     name = models.CharField(max_length=255)
-    users = models.ManyToManyField(CustomUser, related_name="projects")
+    users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="projects")
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="projects")
     allowskip = models.BooleanField(default=True)
-    admins = models.ManyToManyField(CustomUser, related_name="admin_projects")
+    admins = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="admin_projects")
     all_users_admin = models.BooleanField(default=False)
 
 # Column Model (Kanban-style board)
@@ -25,8 +26,8 @@ class WorkItem(models.Model):
     column = models.ForeignKey(Column, on_delete=models.CASCADE, related_name="workitems")
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
-    assigned_by = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, related_name="assigned_tasks")
-    assigned_to = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, related_name="tasks")
+    assigned_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name="assigned_tasks")
+    assigned_to = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name="tasks")
     assigned_at = models.DateTimeField(auto_now_add=True)
     label = models.ManyToManyField(Label, related_name="workitems", blank=True)  # Label for WorkItem (many-to-many)
     parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name="subtasks")  # Self-reference for parent WorkItem
@@ -46,13 +47,13 @@ class WorkItemFile(models.Model):
 
 class WorkItemCustomerNotification(models.Model):
     workitem = models.ForeignKey(WorkItem, on_delete=models.CASCADE, related_name="customer_notifications")
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="workitem_notifications")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="workitem_notifications")
     notify = models.BooleanField(default=False)  # Whether to notify the customer
 
 
 class Comment(models.Model):
     workitem = models.ForeignKey(WorkItem, on_delete=models.CASCADE, related_name="comments")
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="comments")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="comments")
     parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name="replies")  # Self-referencing for nested replies
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
