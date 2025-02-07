@@ -134,7 +134,7 @@ function page() {
         </form>
       </div>
     </div>
-  );
+  )
 }
 
-export default page;
+export default page

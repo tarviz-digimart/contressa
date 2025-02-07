@@ -21,7 +21,7 @@ const Login = () => {
       const response = await axios.post('/api/login', { email, password });
 
       if (response.data.success) {
-        localStorage.setItem('token', response.data.token); // Store token
+        // localStorage.setItem('token', response.data.token); // Store token
         router.push('/dashboard'); // Redirect on success
       }
     } catch (err) {

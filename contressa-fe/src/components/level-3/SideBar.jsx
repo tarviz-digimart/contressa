@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import { ChevronDown, Users } from 'lucide-react';
+import Link from 'next/link';
 
-export default function Sidebar() {
+export default function Sidebar({ menuItems }) {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
@@ -29,8 +30,11 @@ export default function Sidebar() {
         </button>
         {isOpen && (
           <ul className="pl-6 mt-2 text-gray-600">
-            <li className="py-1 hover:text-gray-900 cursor-pointer">Members</li>
-            <li className="py-1 hover:text-gray-900 cursor-pointer">Pending requests</li>
+            {menuItems.map((item, index) => (
+              <li key={index} className="py-1 hover:text-gray-900 cursor-pointer">
+                <Link href={item.route}>{item.name}</Link>
+              </li>
+            ))}
           </ul>
         )}
       </div>
