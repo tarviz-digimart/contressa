@@ -1,7 +1,7 @@
 import { TextField, InputAdornment } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 
-export default function OutlinedTextField({ value, label, onChange,className,placeholder }) {
+export default function StyledTextField({ value, label, onChange, className, placeholder }) {
   return (
     <div className={className}>
       <TextField
