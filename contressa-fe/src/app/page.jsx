@@ -1,140 +1,207 @@
-'use client'
-import { useState } from 'react';
+'use client';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { TextField, Button, Checkbox, FormControlLabel } from '@mui/material';
+import useApi from '@/utils/hooks/useApi';
 import axios from 'axios';
+import OtpFields from '@/components/level-1/OtpFields';
+import { logIn, verifyOTP, resendOTP } from '@/utils/api/apiURL';
 function page() {
+  const {
+    data: LoginData,
+    error: LoginError,
+    loading: LoginLoading,
+    execute: LoginExecute,
+  } = useApi();
+  const { data: OTPdata, error: OTPError, loading: OTPloading, execute: OTPExecute } = useApi();
+  const { data: ResendOTPdata, error: ResendOTPError, execute: ResendOTPExecute } = useApi();
+
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [OTPscreen, setOTPscreen] = useState(false);
+  const [OTPcode, setOTPcode] = useState();
+
+  //Function for posting email and password
   const handleLogin = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-
-    try {
-      const response = await axios.post('/api/login', { email, password });
-
-      if (response.data.success) {
-        localStorage.setItem('token', response.data.token); // Store token
-        router.push('/dashboard'); // Redirect on success
-      }
-    } catch (err) {
-      // setError(err.response?.data?.message || 'Login failed');
-    } finally {
-      setLoading(false);
+    LoginExecute(logIn, 'POST', { email: email, password: password });
+    console.log('useEffect');
+  };
+  //on valid creds, set the pending token
+  useEffect(() => {
+    if (LoginData?.status === 200) {
+      setOTPscreen(true);
+      setOTPcode((prev) => ({ ...prev, pending_token: LoginData?.data.pending_token }));
     }
-  };
+  }, [LoginData]);
 
-  const handleGoogleLogin = async () => {
-    signIn('google', { callbackUrl: '/dashboard' });
+  //Function to verify OTP
+  const handleOTP = () => {
+    OTPExecute(verifyOTP, 'POST', OTPcode);
   };
+  //if OTP verified, routing to org page
+  useEffect(() => {
+    if (OTPdata?.status === 200) {
+      router.push('organization');
+    }
+  }, [OTPdata]);
 
+  //Fn to handle resendOTP
+  const handleResetOTP = () => {
+    ResendOTPExecute(resendOTP, 'POST', { email: email });
+  };
+  //On successfull resendOTP, update the pending token resigin in OTPdata state
+  useEffect(() => {
+    if (ResendOTPdata?.status === 200) {
+      setOTPcode((prev) => ({ ...prev, pending_token: ResendOTPdata?.data.pending_token }));
+    }
+  }, [ResendOTPdata]);
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-        <p className="text-h1 text-center mb-4">Login To Contressa</p>
+      <div className="bg-white p-6 rounded-lg shadow-lg w-[25rem]  pb-[5rem]">
+        <div className="text-h1 text-center mb-4">
+          {!OTPscreen ? <p>Login To Contressa</p> : <p className="mb-10">Verification with OTP</p>}
+        </div>
+        {OTPscreen && (
+          <p className="text-nowrap mb-2">we have sent you the Verification code to your mail</p>
+        )}
         <form onSubmit={handleLogin} className="space-y-4">
-          <TextField
-            size="small"
-            label="Email"
-            fullWidth
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderColor: 'black', // Default border color
-                },
-                '&:hover fieldset': {
-                  borderColor: 'black', // Border color on hover
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: 'black', // Border color when focused
-                },
-              },
-              '& .MuiInputLabel-root': {
-                color: 'black', // Default label color
-              },
-              '& .MuiInputLabel-root.Mui-focused': {
-                color: 'black', // Label color when focused
-              },
-            }}
-          />
-
-          <TextField
-            size="small"
-            label="Password"
-            type="password"
-            fullWidth
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderColor: 'black', // Default border color
-                },
-                '&:hover fieldset': {
-                  borderColor: 'black', // Border color on hover
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: 'black', // Border color when focused
-                },
-              },
-              '& .MuiInputLabel-root': {
-                color: 'black', // Default label color
-              },
-              '& .MuiInputLabel-root.Mui-focused': {
-                color: 'black', // Label color when focused
-              },
-            }}
-          />
-          <div className="flex justify-between items-center ">
-            <div className="flex w-full">
-              <Checkbox />
-              <p className="text-b2 mt-3 -ms-2">Remember me</p>
-            </div>
-            <div className="w-full flex justify-end mb-2 pr-2">
+          {!OTPscreen ? (
+            <>
+              <div>
+                <p>Email*</p>
+                <TextField
+                  size="small"
+                  // label="Email"
+                  fullWidth
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      '& fieldset': {
+                        borderColor: 'black', // Default border color
+                      },
+                      '&:hover fieldset': {
+                        borderColor: 'black', // Border color on hover
+                      },
+                      '&.Mui-focused fieldset': {
+                        borderColor: 'black', // Border color when focused
+                      },
+                    },
+                    '& .MuiInputLabel-root': {
+                      color: 'black', // Default label color
+                    },
+                    '& .MuiInputLabel-root.Mui-focused': {
+                      color: 'black', // Label color when focused
+                    },
+                  }}
+                />
+              </div>
+              <div>
+                <p>Password*</p>
+                <TextField
+                  size="small"
+                  // label="Password"
+                  type="password"
+                  fullWidth
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      '& fieldset': {
+                        borderColor: 'black', // Default border color
+                      },
+                      '&:hover fieldset': {
+                        borderColor: 'black', // Border color on hover
+                      },
+                      '&.Mui-focused fieldset': {
+                        borderColor: 'black', // Border color when focused
+                      },
+                    },
+                    '& .MuiInputLabel-root': {
+                      color: 'black', // Default label color
+                    },
+                    '& .MuiInputLabel-root.Mui-focused': {
+                      color: 'black', // Label color when focused
+                    },
+                  }}
+                />
+              </div>
+              <div className="flex justify-between items-center ">
+                <div className="flex w-full">
+                  <Checkbox />
+                  <p className="text-b2 mt-3 -ms-2">Remember me</p>
+                </div>
+                <div className="w-full flex justify-end mb-2 pr-2">
+                  <Button
+                    variant="text"
+                    className="text-b2 mt-3 underline normal-case text-nowrap"
+                    sx={{
+                      color: 'black',
+                      textTransform: 'none',
+                      textDecoration: 'underline !important', // Force underline
+                      '&:hover': {
+                        backgroundColor: 'inherit !important', // No background change on hover
+                        boxShadow: 'none', // No shadow on hover
+                      },
+                    }}
+                  >
+                    Forgot password?
+                  </Button>
+                </div>
+              </div>
               <Button
-                variant="text"
-                className="text-b2 mt-3 underline normal-case"
+                onClick={handleLogin}
+                // type="submit"
+                fullWidth
+                variant="contained"
+                className="normal-case"
                 sx={{
-                  color: 'black',
-                  textTransform: 'none',
-                  textDecoration: 'underline !important', // Force underline
-                  '&:hover': {
-                    backgroundColor: 'inherit !important', // No background change on hover
-                    boxShadow: 'none', // No shadow on hover
-                  },
+                  backgroundColor: '#5855d6',
+                  '&:hover': { backgroundColor: '#4843c4' },
                 }}
+                disabled={LoginLoading}
               >
-                Forgot password?
+                {LoginLoading ? 'Logging in...' : 'Login'}
               </Button>
-            </div>
-          </div>
+            </>
+          ) : (
+            <>
+              <OtpFields setOtpData={setOTPcode} />
+              <div className="flex justify-between">
+                <Button sx={{ textTransform: 'none' }} onClick={() => setOTPscreen(false)}>
+                  Back
+                </Button>
+                <Button sx={{ textTransform: 'none' }} onClick={handleResetOTP}>
+                  Resend OTP
+                </Button>
+              </div>
+              <Button
+                onClick={handleOTP}
+                // type="submit"
+                fullWidth
+                variant="contained"
+                className="normal-case"
+                sx={{
+                  backgroundColor: '#5855d6',
+                  '&:hover': { backgroundColor: '#4843c4' },
+                }}
+                disabled={OTPloading}
+              >
+                {OTPloading ? 'Verifying...' : 'Verify'}
+              </Button>
+            </>
+          )}
 
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-
-          <Button
-            onClick={() => router.push('/organization')}
-            type="submit"
-            fullWidth
-            variant="contained"
-            className="normal-case"
-            sx={{
-              backgroundColor: '#5855d6',
-              '&:hover': { backgroundColor: '#4843c4' },
-            }}
-            disabled={loading}
-          >
-            {loading ? 'Logging in...' : 'Login'}
-          </Button>
+          {LoginError && (
+            <p className="text-red-500 text-sm">{LoginError?.response?.data?.detail} </p>
+          )}
+          {OTPdata && <p className="text-green-500 text-sm">{OTPdata?.data.detail}</p>}
         </form>
       </div>
     </div>
-  )
+  );
 }
 
-export default page
+export default page;
