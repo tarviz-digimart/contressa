@@ -75,18 +75,18 @@ class Location(BaseModel):
         return self.name  
 
 class Branch(BaseModel):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     location = models.ForeignKey('Location', on_delete=models.CASCADE, related_name="branches")  
     admins = models.ManyToManyField(
         settings.AUTH_USER_MODEL, blank=True, related_name="managed_branches",
         help_text="Users who are responsible for managing this branch."
     )
     employees = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name="branches")
-    address_line_1 = models.CharField(max_length=255)
+    address_line_1 = models.CharField(max_length=255, blank=True, null=True)
     address_line_2 = models.CharField(max_length=255, blank=True, null=True)
-    city = models.CharField(max_length=100)
-    state = models.CharField(max_length=100)
-    postal_code = models.CharField(max_length=20)
+    city = models.CharField(max_length=100, blank=True)
+    state = models.CharField(max_length=100, blank=True)
+    postal_code = models.CharField(max_length=20, blank=True)
 
     def get_all_users(self):
         """Get all users in the branch, separating superusers, admins, and employees."""
