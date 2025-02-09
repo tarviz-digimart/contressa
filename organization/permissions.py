@@ -1,49 +1,34 @@
 from rest_framework.permissions import BasePermission
 
-class HasSuperuserAccess(BasePermission):
+class IsBranchAdmin(BasePermission):
     """
-    Allows access only to superusers.
+    Allows access only if the user is an admin of the branch they are trying to modify.
     """
-
     def has_permission(self, request, view):
-        return request.user and request.user.is_superuser
+        branch_id = view.kwargs.get("branch_id")  # Get from URL parameters
+        if not branch_id:
+            return False  # Deny access if no branch ID is found in the URL
+        branch_id = int(branch_id)  # Convert to integer
+        return request.branch_roles.get(branch_id) == "admin"
 
-
-class HasBranchAdminAccess(BasePermission):
+class IsBranchSuperuser(BasePermission):
     """
-    Allows access to:
-    - Superusers
-    - Branch Admins of the specific branch being accessed
+    Allows access only if the user is a superuser of the branch they are trying to modify.
     """
-
-    def has_object_permission(self, request, view, obj):
-        """
-        Check if the user is a superuser or an admin of the branch.
-        """
-        return request.user.is_superuser or request.user in obj.branch_admins.all()
-
-
-class HasDepartmentHeadAccess(BasePermission):
+    def has_permission(self, request, view):
+        branch_id = view.kwargs.get("branch_id")  # Get from URL parameters
+        if not branch_id:
+            return False  # Deny access if no branch ID is found in the URL
+        branch_id = int(branch_id)  # Convert to integer
+        return request.branch_roles.get(branch_id) == "superuser"
+    
+class IsBranchEmployee(BasePermission):
     """
-    Allows access to:
-    - Superusers
-    - Branch Admins of the department's branch
-    - Department Heads
+    Allows access only if the user is an employee of the branch they are trying to modify.
     """
-
-    def has_object_permission(self, request, view, obj):
-        user = request.user
-
-        # Superusers have full access
-        if user.is_superuser:
-            return True
-
-        # Ensure `obj` has a branch and branch admins
-        if hasattr(obj, 'branch') and obj.branch.branch_admins.filter(id=user.id).exists():
-            return True
-
-        # Check if the user is a department head
-        if hasattr(obj, 'department_heads') and obj.department_heads.filter(id=user.id).exists():
-            return True
-
-        return False
+    def has_permission(self, request, view):
+        branch_id = view.kwargs.get("branch_id")  # Get from URL parameters
+        if not branch_id:
+            return False  # Deny access if no branch ID is found in the URL
+        branch_id = int(branch_id)  # Convert to integer
+        return request.branch_roles.get(branch_id) == "employee"

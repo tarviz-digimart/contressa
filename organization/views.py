@@ -4,7 +4,7 @@ from organization.models import Organization, Location, Branch, Department, Desi
 from organization.serializers import (
     OrganizationSerializer, LocationSerializer, BranchSerializer, DepartmentSerializer, DesignationSerializer
 )
-from organization.permissions import HasBranchAdminAccess, HasDepartmentHeadAccess, HasSuperuserAccess
+# from organization.permissions import HasBranchAdminAccess, HasDepartmentHeadAccess, HasSuperuserAccess
 class OrganizationViewSet(viewsets.ModelViewSet):
     """
     API endpoint for managing Organizations.
@@ -12,7 +12,7 @@ class OrganizationViewSet(viewsets.ModelViewSet):
     """
     queryset = Organization.objects.all()
     serializer_class = OrganizationSerializer
-    permission_classes = [HasSuperuserAccess]  # Ensure only authenticated users can access
+    # permission_classes = [HasSuperuserAccess]  # Ensure only authenticated users can access
 
 
 class LocationViewSet(viewsets.ModelViewSet):
@@ -22,7 +22,7 @@ class LocationViewSet(viewsets.ModelViewSet):
     """
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
-    permission_classes = [HasSuperuserAccess]
+    # permission_classes = [HasSuperuserAccess]
 
 
 class BranchViewSet(viewsets.ModelViewSet):
@@ -33,7 +33,7 @@ class BranchViewSet(viewsets.ModelViewSet):
     """
     queryset = Branch.objects.all()
     serializer_class = BranchSerializer
-    permission_classes = [HasBranchAdminAccess]
+    # permission_classes = [HasBranchAdminAccess]
 
 
 class DepartmentViewSet(viewsets.ModelViewSet):
@@ -44,7 +44,7 @@ class DepartmentViewSet(viewsets.ModelViewSet):
     """
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
-    permission_classes = [HasDepartmentHeadAccess]
+    # permission_classes = [HasDepartmentHeadAccess]
 
 
 class DesignationViewSet(viewsets.ModelViewSet):
@@ -54,4 +54,4 @@ class DesignationViewSet(viewsets.ModelViewSet):
     """
     queryset = Designation.objects.all()
     serializer_class = DesignationSerializer
-    permission_classes = [HasBranchAdminAccess]
+    # permission_classes = [HasBranchAdminAccess]

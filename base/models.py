@@ -30,17 +30,15 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault("is_superuser", True)
         return self.create_user(email, password, full_name, **extra_fields)
 
-class CustomUser(AbstractUser):
+class CustomUser(AbstractUser, BaseModel):
     email = models.EmailField(unique=True)
     full_name = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=15, null=True, blank=True)
     profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
-    organization = models.ForeignKey('organization.Organization', on_delete=models.SET_NULL, null=True, blank=True)
-    department = models.ForeignKey('organization.Department', on_delete=models.SET_NULL, null=True, blank=True)
-    location = models.ForeignKey('organization.Location', on_delete=models.SET_NULL, null=True, blank=True)
     designation = models.ForeignKey('organization.Designation', on_delete=models.SET_NULL, null=True, blank=True)
     receive_emails = models.BooleanField(default=True)
     receive_notifications = models.BooleanField(default=True)
+    active_status = models.BooleanField(default=False)
 
     objects = CustomUserManager()
 

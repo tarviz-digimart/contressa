@@ -237,6 +237,7 @@ CORS_ALLOW_HEADERS = (
     *default_headers,
     'Branch',
     "Organization",
+    "Branch_roles"
 )
 # Django Rest Auth Configuration
 REST_USE_JWT = True  # This is recommended when using dj-rest-auth with JWT tokens

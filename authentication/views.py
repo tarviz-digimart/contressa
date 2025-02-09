@@ -40,6 +40,7 @@ class OTPLoginView(APIView):
             fail_silently=False,
         )
 
+
         return Response({
             'detail': 'OTP sent to email.',
             'pending_token': pending_token,
@@ -68,11 +69,18 @@ class OTPVerifyView(APIView):
         pending_record.delete()
 
         refresh = RefreshToken.for_user(user)
+        organization = user.organization  
 
+        branches = user.branches.all()  
+
+        branch_roles = {branch.id: user.get_role(branch) for branch in branches}
         return Response({
             'detail': 'Login successful',
             'access': str(refresh.access_token), # access token
             'refresh': str(refresh), # refresh token
+            "Organization": organization.id if organization else None,
+            "Branches": [branch.id for branch in branches], 
+            "Branch_roles": branch_roles              
         }, status=status.HTTP_200_OK)
 
 
@@ -117,5 +125,5 @@ class ResendOTPView(APIView):
 
         return Response({
             'detail': 'New OTP sent to email.',
-            'pending_token': pending_token,  # Return the new pending token
+            'pending_token': pending_token,  # Return the new pending token          
         }, status=status.HTTP_200_OK)

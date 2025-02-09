@@ -8,7 +8,7 @@ class Organization(BaseModel):
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField(blank=True, null=True)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name="organizations")
-    superusers = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name="superuser_organizations")
+    superusers = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, null=True, related_name="superuser_organizations")
     headquarters = models.OneToOneField(
         'Branch', on_delete=models.SET_NULL, null=True, blank=True,
         related_name="hq_of",
@@ -17,16 +17,14 @@ class Organization(BaseModel):
 
     def clean(self):
         """Enforce unique user membership and proper user separation."""
-        if self.owner:
-            # Owner should not be in superusers or employees
-            if self.superusers.filter(id=self.owner.id).exists():
-                raise ValidationError("The owner cannot be a superuser of the same organization.")
-            if self.employees.filter(id=self.owner.id).exists():
-                raise ValidationError("The owner cannot be an employee of the same organization.")
+        # Get all employees from branches related to this organization
+        branch_employees = (
+            Branch.objects.filter(location__organization=self)
+            .values_list("employees", flat=True)
+        )
 
-        # Superusers should not be in employees
-        if self.superusers.filter(id__in=self.employees.values_list("id", flat=True)).exists():
-            raise ValidationError("Superusers cannot also be employees.")
+        if self.superusers.filter(id__in=branch_employees).exists():
+            raise ValidationError("Superusers cannot also be employees in any branch.")
 
     def save(self, *args, **kwargs):
         """Validate constraints before saving."""
