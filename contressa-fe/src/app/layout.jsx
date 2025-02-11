@@ -1,19 +1,18 @@
-import './globals.css'; // If you have global styles
-
-export const metadata = {
-  title: 'Task Management',
-  description: 'Task Management System',
-};
-
+import './globals.css';
+import Navbar from '@/components/level-3/Navbar';
+import { OrgProvider } from '@/context/OrgContext';
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>
-          <div className="min-h-screen bg-gray-50">
-            {/* Preserve your existing layout structure */}
-            {children}
-          </div>
+      <head>
+        <title>Contessa</title>
+      </head>
+      <body className="font-sans antialiased h-screen flex flex-col">
+        <OrgProvider>
+          <Navbar />
+          <div className="mt-[60px] w-full h-full">{children}</div>
+        </OrgProvider>
       </body>
     </html>
   );
-} 
+}
