@@ -23,7 +23,11 @@ function Page() {
   const sensors = useSensors(
     useSensor(TouchSensor),
     useSensor(MouseSensor),
-    useSensor(PointerSensor)
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 10,
+      },
+    })
   );
 
   const [columns, setColumns] = useState([
@@ -175,7 +179,7 @@ function Page() {
   }
 
   return (
-    <div className="flex flex-col items-start justify-start px-10 py-4 w-full gap-y-6 h-full overflow-y-auto">
+    <div className="flex flex-col items-start justify-start px-10 py-4 w-full gap-y-6 h-full">
       <Typography sx={{ fontWeight: 'bold' }}>KM Construction</Typography>
 
       <TextField
@@ -261,7 +265,7 @@ function Page() {
         sensors={sensors}
         onDragOver={handleDragOver}
       >
-        <div className="flex flex-row flex-grow justify-start w-full gap-5 overflow-x-auto">
+        <div className="flex flex-row flex-grow justify-start w-full gap-5">
           {columns.map((column) => (
             <ChartColumn
               key={column.id}
