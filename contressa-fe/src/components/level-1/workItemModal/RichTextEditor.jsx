@@ -1,15 +1,6 @@
 import React, { useRef, useState } from 'react';
-import { Button } from '@mui/material';
 
 const RichTextEditor = ({ handleInput, fileInputRef, setContent, editorRef }) => {
-  // const editorRef = useRef(null);
-  // const fileInputRef = useRef(null);
-
-  // Handle typing in the editor
-  // const handleInput = () => {
-  //   setContent(editorRef.current.innerHTML);
-  // };
-
   // Handle pasted text (preserves only text, no styles)
   const handlePaste = (e) => {
     e.preventDefault();

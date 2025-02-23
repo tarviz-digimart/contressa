@@ -131,9 +131,8 @@ function page() {
   const initialDomains = ['ecosaver.com', 'tarviz.com'];
 
   return (
-    <div className="flex">
-      <Sidebar menuItems={menuItems} />
-      <div className="flex flex-col w-full p-4 ms-64">
+    <div className="flex flex-col p-4 overflow-y-auto w-[100vw]">
+      <div className="w-full">
         <h1 className="my-4">Organization</h1>
         <div>
           <h2 className="mb-2">Name</h2>
@@ -145,11 +144,13 @@ function page() {
             <StyledTextField className="w-1/2" placeholder="Add Organization Description" />
           </div>
         </div>
-        <div className='flex mt-4 mb-2  items-center'>
+        <div className="flex mt-4 mb-2  items-center">
           <h2>Branches</h2>
-          <p className='rounded-full text-b1 py-1 px-1.5 bg-blue-300 ms-2'>{organizations.length}</p>
+          <p className="rounded-full text-b1 py-1 px-1.5 bg-blue-300 ms-2">
+            {organizations.length}
+          </p>
         </div>
-        <div className='w-[40rem]'>
+        <div className="w-[40rem]">
           <HorizontalScroll Branches={organizations} />
         </div>
         <div className="my-5">

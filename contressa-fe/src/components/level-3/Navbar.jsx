@@ -1,5 +1,4 @@
 'use client';
-// Navbar component
 import { useRouter, usePathname } from 'next/navigation';
 import { useState, useRef, useEffect } from 'react';
 import { MdOutlineDashboard } from 'react-icons/md';
@@ -7,6 +6,8 @@ import { IoNotificationsOutline } from 'react-icons/io5';
 import { FaRegUserCircle } from 'react-icons/fa';
 import ProfilePopup from '../level-2/ProfilePopup';
 import LoginLogoutPopup from './LoginLogoutPopup';
+import CorporateFareIcon from '@mui/icons-material/CorporateFare';
+import { IconButton } from '@mui/material';
 
 function Navbar() {
   const pathname = usePathname();
@@ -44,77 +45,79 @@ function Navbar() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-  console.log('ROOT', isRoot);
-  if (isRoot) {
-    return <></>;
-  }
+  console.log('isProfileOpen:', isProfileOpen);
+
   return (
-    <nav className="bg-white fixed top-0 z-10  border-gray-200 dark:bg-gray-900 w-full">
+    <div className="bg-[#282828] fixed top-0 h-[4rem] z-10 border-gray-200 dark:bg-gray-900 w-full">
       <div className="flex flex-wrap items-center justify-between mx-auto p-4">
         {/* Left Side */}
         <div
           className="flex items-center space-x-3 cursor-pointer"
           onClick={() => router.push('/')}
         >
-          <MdOutlineDashboard size={24} />
-          <p className="text-lg font-semibold">Task Manager asdfasdf</p>
+          <MdOutlineDashboard className="text-white" size={24} />
+          <p className="text-lg font-semibold text-white">Contressa</p>
         </div>
+        {!isRoot && (
+          <>
+            {/* Right Side - Navigation Links */}
+            <div className="hidden md:flex items-center space-x-8">
+              {[
+                { name: 'Dashboard', path: '/dashboard' },
+                { name: 'Task', path: '/task' },
+                { name: 'Attendance', path: '/attendance' },
+                { name: 'Inventory', path: 'inventory' },
+                { name: 'Sales', path: '/sales' },
+                { name: 'Payroll', path: '/payroll' },
+              ].map((item) => (
+                <p
+                  key={item.path}
+                  className={`cursor-pointer p-2 rounded-full min-w-[100px] text-center transition-all duration-300 ${
+                    pathname === item.path
+                      ? 'text-black font-medium bg-white'
+                      : 'text-white hover:text-slate-200'
+                  }`}
+                  onClick={() => router.push(item.path)}
+                >
+                  {item.name}
+                </p>
+              ))}
+            </div>
+          </>
+        )}
+        {!isRoot && (
+          <div className="flex items-center space-x-6 relative">
+            <div className="relative cursor-pointer" onClick={() => setNotifOpen(!isNotifOpen)}>
+              <IoNotificationsOutline className="text-white" size={24} />
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                3
+              </span>
+            </div>
+            <IconButton>
+              <CorporateFareIcon
+                style={{ color: 'white' }}
+                onClick={() => router.push('/organization')}
+              />
+            </IconButton>
+            {/* Profile Icon */}
+            <div className="cursor-pointer" onClick={() => setProfileOpen((prev) => !prev)}>
+              <FaRegUserCircle className="text-white" size={24} />
+            </div>
 
-        {/* Right Side - Navigation Links */}
-        <div className="hidden md:flex items-center space-x-8">
-          {[
-            { name: 'Organization', path: '/organization' },
-            { name: 'Projects', path: '/projects' },
-            { name: 'Dashboard', path: '' },
-            { name: 'Requests', path: '/requests' },
-          ].map((item) => (
-            <p
-              key={item.path}
-              className={`cursor-pointer ${
-                pathname === item.path
-                  ? 'text-blue-700 font-medium'
-                  : 'text-gray-900 hover:text-blue-700'
-              }`}
-              onClick={() => router.push(item.path)}
-            >
-              {item.name}
-            </p>
-          ))}
-        </div>
-
-        <div className="flex items-center space-x-6 relative">
-          <button
-            onClick={() => setLoginOpen(true)}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
-          >
-            login
-          </button>
-          {/* Notification Icon */}
-          <div className="relative cursor-pointer" onClick={() => setNotifOpen(!isNotifOpen)}>
-            <IoNotificationsOutline size={24} />
-            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-              3
-            </span>
+            {/* Profile Popup */}
+            {isProfileOpen && (
+              <ProfilePopup ref={profileRef} isOpen={isProfileOpen} handleClose={handleClose} />
+            )}
+            <LoginLogoutPopup
+              open={isLoginOpen}
+              handleClose={handleLoginClose}
+              handleLogin={handleLogin}
+              Login={Login}
+            />
           </div>
-
-          {/* Profile Icon */}
-          <div className="cursor-pointer" onClick={() => setProfileOpen(!isProfileOpen)}>
-            <FaRegUserCircle size={24} />
-          </div>
-
-          {/* Profile Popup */}
-          {isProfileOpen && (
-            <ProfilePopup ref={profileRef} isOpen={isProfileOpen} handleClose={handleClose} />
-          )}
-          <LoginLogoutPopup
-            open={isLoginOpen}
-            handleClose={handleLoginClose}
-            handleLogin={handleLogin}
-            Login={Login}
-          />
-        </div>
+        )}
       </div>
-    </nav>
+    </div>
   );
 }
 

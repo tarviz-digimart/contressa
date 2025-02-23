@@ -3,10 +3,12 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { TextField, Button, Checkbox, FormControlLabel } from '@mui/material';
 import useApi from '@/utils/hooks/useApi';
-import axios from 'axios';
 import OtpFields from '@/components/level-1/OtpFields';
+import { fontStyle } from '@/utils/styles/fontStyles';
 import { logIn, verifyOTP, resendOTP } from '@/utils/api/apiURL';
+import WorkItemModal from '@/components/level-2/workItemModal';
 function page() {
+  const style = fontStyle();
   const {
     data: LoginData,
     error: LoginError,
@@ -19,7 +21,6 @@ function page() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
   const [OTPscreen, setOTPscreen] = useState(false);
   const [OTPcode, setOTPcode] = useState();
 
@@ -61,7 +62,13 @@ function page() {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-6 rounded-lg shadow-lg w-[25rem]  pb-[5rem]">
         <div className="text-h1 text-center mb-4">
-          {!OTPscreen ? <p>Login To Contressa</p> : <p className="mb-10">Verification with OTP</p>}
+          {!OTPscreen ? (
+            <p style={style.subHeading}>Login To Contressa</p>
+          ) : (
+            <p className="mb-10" style={style.subHeading}>
+              Verification with OTP
+            </p>
+          )}
         </div>
         {OTPscreen && (
           <p className="text-nowrap mb-2">we have sent you the Verification code to your mail</p>
@@ -70,7 +77,9 @@ function page() {
           {!OTPscreen ? (
             <>
               <div>
-                <p>Email*</p>
+                <p className="heading" style={style.body}>
+                  Email
+                </p>
                 <TextField
                   size="small"
                   // label="Email"
@@ -99,7 +108,7 @@ function page() {
                 />
               </div>
               <div>
-                <p>Password*</p>
+                <p style={style.body}>Password</p>
                 <TextField
                   size="small"
                   // label="Password"
@@ -129,15 +138,12 @@ function page() {
                 />
               </div>
               <div className="flex justify-between items-center ">
-                <div className="flex w-full">
-                  <Checkbox />
-                  <p className="text-b2 mt-3 -ms-2">Remember me</p>
-                </div>
-                <div className="w-full flex justify-end mb-2 pr-2">
+                <div className="w-full flex justify-end ">
                   <Button
                     variant="text"
-                    className="text-b2 mt-3 underline normal-case text-nowrap"
+                    className="text-b2 underline normal-case text-nowrap"
                     sx={{
+                      ...style.caption,
                       color: 'black',
                       textTransform: 'none',
                       textDecoration: 'underline !important', // Force underline
@@ -158,6 +164,7 @@ function page() {
                 variant="contained"
                 className="normal-case"
                 sx={{
+                  ...style.body,
                   backgroundColor: '#5855d6',
                   '&:hover': { backgroundColor: '#4843c4' },
                 }}

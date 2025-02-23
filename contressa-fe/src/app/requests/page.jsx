@@ -9,8 +9,8 @@ export default function Requests() {
 
   return (
     <div className="flex">
-      <Sidebar menuItems={menuItems} />
-      <div className='ms-64'>
+      {/* <Sidebar menuItems={menuItems} /> */}
+      <div className="ms-64">
         <RequestsPage />
       </div>
     </div>

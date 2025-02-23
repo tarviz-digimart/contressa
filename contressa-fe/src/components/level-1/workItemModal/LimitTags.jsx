@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-
+import { TagSelectData } from '@/DummyData/FakeData';
 export default function LimitTags() {
   return (
     <div className="w-full">
@@ -9,9 +9,8 @@ export default function LimitTags() {
         multiple
         limitTags={3}
         id="multiple-limit-tags"
-        options={names}
+        options={TagSelectData}
         getOptionLabel={(option) => option.name}
-        // defaultValue={[names[13], names[12], names[11]]} //This is to add default values.
         renderInput={(params) => <TextField {...params} label="" placeholder="Select Assigner" />}
         sx={{
           height: '50px',
@@ -29,7 +28,7 @@ export default function LimitTags() {
           '& input': {
             marginLeft: '-7px', // Removes extra margin for the placeholder
             padding: '0px', // Adjust padding to align text properly
-          },    
+          },
           '& input::placeholder': {
             opacity: 1, // Ensures the placeholder is fully visible
             color: '#64748b', // Keeps the placeholder color the same
@@ -39,13 +38,3 @@ export default function LimitTags() {
     </div>
   );
 }
-
-// Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
-const names = [
-  { name: 'Kevin' },
-  { name: 'Emily' },
-  { name: 'Josh' },
-  { name: 'Adam' },
-  { name: 'Vikram' },
-  { name: 'Sid' },
-];

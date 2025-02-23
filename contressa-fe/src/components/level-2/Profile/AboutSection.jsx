@@ -1,16 +1,16 @@
-import React from "react";
-import { Avatar, Button, Divider } from "@mui/material";
-import { MdOutlineWork,MdEmail } from "react-icons/md";
-import { HiOfficeBuilding } from "react-icons/hi";
-import { IoIosGitNetwork } from "react-icons/io";
-import { FaLocationArrow,FaPhone } from "react-icons/fa";
+import React from 'react';
+import { Avatar, Button, Divider } from '@mui/material';
+import { MdOutlineWork, MdEmail } from 'react-icons/md';
+import { HiOfficeBuilding } from 'react-icons/hi';
+import { IoIosGitNetwork } from 'react-icons/io';
+import { FaLocationArrow, FaPhone } from 'react-icons/fa';
 
-function AboutSection() {
+function AboutSection({ ProfileData }) {
   const details = [
-    { icon: MdOutlineWork, text: "Your Job Title" },
-    { icon: IoIosGitNetwork, text: "Your Department" },
-    { icon: HiOfficeBuilding, text: "Your Organisation" },
-    { icon: FaLocationArrow, text: "Your Location" },
+    { icon: MdOutlineWork, text: 'Your Job Title' },
+    { icon: IoIosGitNetwork, text: 'Your Department' },
+    { icon: HiOfficeBuilding, text: 'Your Organisation' },
+    { icon: FaLocationArrow, text: 'Your Location' },
   ];
   return (
     <div>
@@ -20,12 +20,10 @@ function AboutSection() {
           sx={{ width: 120, height: 120 }}
           className="mb-4"
         />
-        <h3 variant="h5" className="font-bold mb-4">
-          DARSHAN KATHIRAVAN
-        </h3>
-        <Button className="bg-gray-200 text-black text-b1 w-64">
-          Manage your account
-        </Button>
+        <p variant="h5" className="font-bold mb-4">
+          {ProfileData.name}
+        </p>
+        <Button className="bg-gray-200 text-black text-b1 w-64">Manage your account</Button>
       </div>
       <div className="space-y-4 mt-4 text-left shadow-lg p-4 text-gray-500 text-b2">
         <p className="text-b1">About</p>
@@ -39,17 +37,17 @@ function AboutSection() {
         </div>
 
         {/* Contact Section */}
-        <Divider sx={{ backgroundColor: "white" }} />
+        <Divider sx={{ backgroundColor: 'white' }} />
         <p variant="subtitle2" className="">
           Contact
         </p>
         <div className="flex items-center">
-          <MdEmail className="mr-2 text-xl"/>
-          <p>kathiravandarshan@gmail.com</p>
+          <MdEmail className="mr-2 text-xl" />
+          <p>{ProfileData.email}</p>
         </div>
         <div className="flex items-center">
           <FaPhone className="mr-2 text-lg" />
-          <p>6487394827</p>
+          <p>{ProfileData.phone}</p>
         </div>
       </div>
     </div>
