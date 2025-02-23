@@ -279,6 +279,7 @@ class Permission(models.Model):
 class Role(BaseModel):
     name = models.CharField(max_length=255)
     level = models.PositiveIntegerField(default=2)  # Owner will be level 1
+    description = models.TextField(blank=True, null=True)
     organization = models.ForeignKey('Organization', on_delete=models.CASCADE, related_name="roles", blank=True, null=True)
     permissions = models.JSONField(default=list)  # Store a list of permission codes
 

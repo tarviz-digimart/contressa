@@ -2,7 +2,7 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from organization.models import Organization, Location, Branch, Designation
 from organization.serializers import (
-    OrganizationSerializer, LocationSerializer, BranchSerializer, DesignationSerializer
+    OrganizationSerializer, LocationSerializer, BranchSerializer, DesignationSerializer, RoleSerializer, RoleListSerializer
 )
 from base.serializers import EmployeeSerializer
 from django.conf import settings
@@ -141,3 +141,59 @@ class AcceptInviteView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class RoleViewSet(viewsets.ModelViewSet):
+    """
+    Role management API (Create, List, Update, Delete)
+    """
+    queryset = Role.objects.all() 
+    serializer_class = RoleSerializer
+
+    def get_queryset(self):
+        """Return roles belonging to the organization from request header"""
+        organization_id = self.request.headers.get("Organization")
+        if not organization_id:
+            return Role.objects.none()  
+
+        return Role.objects.filter(organization_id=organization_id)
+
+    def list(self, request, *args, **kwargs):
+        """Use RoleListSerializer when listing roles"""
+        queryset = self.get_queryset()
+        serializer = RoleListSerializer(queryset, many=True)
+        return Response(serializer.data)
+    
+    def create(self, request, *args, **kwargs):
+        """Create a new role for the given organization"""
+        organization_id = request.headers.get("Organization")
+        if not organization_id:
+            return Response({"error": "Organization ID is required"}, status=400)
+
+        data = request.data.copy()
+        data["organization"] = organization_id  # Assign organization
+
+        serializer = self.get_serializer(data=data, context={"request": request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+    
+    def partial_update(self, request, *args, **kwargs):
+        """Allow PATCH but prevent updating the 'Owner' role"""
+        role = self.get_object()
+        if role.name.lower() == "owner":
+            return Response({"error": "Updating the 'Owner' role is not allowed."}, status=403)
+
+        serializer = self.get_serializer(role, data=request.data, partial=True, context={"request": request})
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=200)
+
+        return Response(serializer.errors, status=400)
+    
+    def destroy(self, request, *args, **kwargs):
+        """Prevent deleting 'Owner' role"""
+        role = self.get_object()
+        if role.name.lower() == "owner":
+            return Response({"error": "Deleting the 'Owner' role is not allowed."}, status=403)
+        return super().destroy(request, *args, **kwargs)
