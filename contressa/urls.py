@@ -23,7 +23,7 @@ from rest_framework.routers import DefaultRouter
 from authentication.views import OTPLoginView, OTPVerifyView, ResendOTPView
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
-from organization.views import OrganizationViewSet, LocationViewSet, BranchViewSet, DesignationViewSet, InviteUserView, AcceptInviteView
+from organization.views import OrganizationViewSet, LocationViewSet, BranchViewSet, DesignationViewSet, InviteUserView, AcceptInviteView, RoleViewSet
 
 
 router = DefaultRouter()
@@ -31,6 +31,7 @@ router.register(r'organizations', OrganizationViewSet)
 router.register(r'locations', LocationViewSet)
 router.register(r'branches', BranchViewSet)
 router.register(r'designations', DesignationViewSet)
+router.register(r'roles', RoleViewSet)
 
 
 schema_view = get_schema_view(
