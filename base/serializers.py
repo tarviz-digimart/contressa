@@ -1,31 +1,22 @@
 from rest_framework import serializers
-from base.models import CustomUser
+from base.models import CustomUser, Employee
+from organization.models import Role, Branch, Designation
 
 class UserSerializer(serializers.ModelSerializer):
     access = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomUser
-        fields = ["id", "full_name", "email", "designation", "access", "created_at", "active_status"]
+        fields = ["id", "full_name", "email", "created_at", "active_status"]
 
-    def get_access(self, obj):
-        """Determine the user's role within a given branch."""
-        request = self.context.get("request")
-        branch = self.context.get("branch")  # Pass the branch explicitly
 
-        if not request or not branch:
-            return None  # No request context or branch
 
-        # Check if the user is a superuser in the branch's organization
-        if obj in branch.location.organization.superusers.all():
-            return "superuser"
+class EmployeeSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(queryset=CustomUser.objects.all())  
+    role = serializers.PrimaryKeyRelatedField(queryset=Role.objects.all(), required=False, allow_null=True)
+    branch = serializers.PrimaryKeyRelatedField(queryset=Branch.objects.all(), required=False, allow_null=True)
+    designation = serializers.PrimaryKeyRelatedField(queryset=Designation.objects.all(), required=False, allow_null=True)
 
-        # Check if the user is an admin of this branch
-        if branch.admins.filter(id=obj.id).exists():
-            return "admin"
-
-        # Check if the user is an employee of this branch
-        if branch.employees.filter(id=obj.id).exists():
-            return "employee"
-
-        return None  # No role found
+    class Meta:
+        model = Employee
+        fields = ["id", "user", "organization", "role", "branch", "designation", "joining_date"]

@@ -64,6 +64,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'simple_history.middleware.HistoryRequestMiddleware',
     'contressa.custom_middlewares.OrganizationContextMiddleware',
+    'crum.CurrentRequestUserMiddleware',
+
 ]
 ROOT_URLCONF = 'contressa.urls'
 
@@ -288,3 +290,5 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv('SMTP_EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('SMTP_EMAIL_HOST_PASSWORD') # Use the 16-character app password
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
+
+DOMAIN_ADDRESS = "localhost:8000"

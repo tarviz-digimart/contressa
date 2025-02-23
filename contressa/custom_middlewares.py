@@ -1,6 +1,7 @@
 from django.utils.deprecation import MiddlewareMixin
 from organization.models import Branch, Organization
 
+
 class OrganizationContextMiddleware(MiddlewareMixin):
     def process_request(self, request):
         request.organization = None
@@ -24,3 +25,4 @@ class OrganizationContextMiddleware(MiddlewareMixin):
                     request.branch_roles[branch.id] = "employee"
 
             request.branches = branches
+

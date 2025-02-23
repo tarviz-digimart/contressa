@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from organization.models import Organization, Location, Branch, Department, Designation
+from organization.models import Organization, Location, Branch, Role, Designation
 from base.serializers import UserSerializer
 
 class OrganizationSerializer(serializers.ModelSerializer):
@@ -33,13 +33,23 @@ class BranchSerializer(serializers.ModelSerializer):
         }
 
 
-class DepartmentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Department
-        fields = "__all__"
-
-
 class DesignationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Designation
         fields = "__all__"
+
+
+class InviteBranchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Branch
+        fields = ["id", "name"]  # Include only relevant fields
+
+class InviteRoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Role
+        fields = ["id", "name"]
+
+class InviteDesignationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Designation
+        fields = ["id", "name"]
