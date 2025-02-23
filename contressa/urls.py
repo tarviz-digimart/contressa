@@ -23,14 +23,13 @@ from rest_framework.routers import DefaultRouter
 from authentication.views import OTPLoginView, OTPVerifyView, ResendOTPView
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
-from organization.views import OrganizationViewSet, LocationViewSet, BranchViewSet, DepartmentViewSet, DesignationViewSet
+from organization.views import OrganizationViewSet, LocationViewSet, BranchViewSet, DesignationViewSet, InviteUserView, AcceptInviteView
 
 
 router = DefaultRouter()
 router.register(r'organizations', OrganizationViewSet)
 router.register(r'locations', LocationViewSet)
 router.register(r'branches', BranchViewSet)
-router.register(r'departments', DepartmentViewSet)
 router.register(r'designations', DesignationViewSet)
 
 
@@ -58,6 +57,8 @@ urlpatterns = [
     path('verify-otp/', OTPVerifyView.as_view(), name='verify-otp'),
     path('resend-otp/', ResendOTPView.as_view(), name='otp-resend'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/send-invite/', InviteUserView.as_view(), name='send_invite'),
+    path('api/accept-invite/<uuid:token>', AcceptInviteView.as_view(), name='accept_invite'),
 
 ]
 
