@@ -5,8 +5,6 @@ import Sidebar from '@/components/level-3/SideBar';
 import { OrgProvider } from '@/context/OrgContext';
 
 export default function RootLayout({ children }) {
-
-
   return (
     <html lang="en">
       <head>
@@ -17,9 +15,7 @@ export default function RootLayout({ children }) {
           <Navbar />
           <div className="flex mt-[60px] min-h-screen">
             <Sidebar />
-            <div className="overflow-y-auto w-full flex justify-center bg-[#f8f4f4] p-4">
-              {children}
-            </div>
+            <div className="overflow-y-auto w-full flex  bg-[#f8f4f4] p-4">{children}</div>
           </div>
         </body>
       </OrgProvider>

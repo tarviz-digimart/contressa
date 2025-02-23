@@ -121,24 +121,26 @@ const CateogryPerformance = ({ data }) => {
 //Dashboard Page
 function Page() {
   return (
-    <div className="flex flex-col mt-5 gap-y-5 w-[95%] items-center">
-      <div className="flex gap-5 justify-center w-full">
-        {cardData.map((card, index) => (
-          <DashboardCard key={index} {...card} />
-        ))}
-      </div>
-      <div className="flex gap-5 w-full justify-center">
-        <TopList title="Top Performing Employees" data={employeeData} />
-        <TopProductList title="Top Selling Products" data={productData} />
-      </div>
-      <div className="flex gap-5  items-center justify-around w-full">
-        <BasicBars />
-        <BasicPie />
-      </div>
-      <div className="flex items-center justify-around gap-5 w-full">
-        <BasicArea />
-        <div className="bg-white rounded-xl w-full h-full  basis-1/3">
-          <CateogryPerformance data={categoryData} />
+    <div className='flex justify-center w-full h-full'>
+      <div className="flex flex-col mt-5 gap-y-5 w-[95%] items-center">
+        <div className="flex gap-5 justify-center w-full">
+          {cardData.map((card, index) => (
+            <DashboardCard key={index} {...card} />
+          ))}
+        </div>
+        <div className="flex gap-5 w-full justify-center">
+          <TopList title="Top Performing Employees" data={employeeData} />
+          <TopProductList title="Top Selling Products" data={productData} />
+        </div>
+        <div className="flex gap-5  items-center justify-around w-full">
+          <BasicBars />
+          <BasicPie />
+        </div>
+        <div className="flex items-center justify-around gap-5 w-full">
+          <BasicArea />
+          <div className="bg-white rounded-xl w-full h-full  basis-1/3">
+            <CateogryPerformance data={categoryData} />
+          </div>
         </div>
       </div>
     </div>

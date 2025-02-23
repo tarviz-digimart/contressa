@@ -26,8 +26,7 @@ function page() {
 
   //Function for posting email and password
   const handleLogin = async (e) => {
-    LoginExecute(logIn, 'POST', { email: email, password: password });
-    console.log('useEffect');
+    LoginExecute(logIn, 'POST', { organization_id: 1, email: email, password: password });
   };
   //on valid creds, set the pending token
   useEffect(() => {

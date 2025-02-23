@@ -38,6 +38,11 @@ const menuConfig = {
     { name: 'Security', route: '/settings/security' },
     { name: 'Notifications', route: '/settings/notifications' },
   ],
+  '/organization': [
+    { name: 'Branches', route: '/organization/branches' },
+    { name: 'Members', route: '/organization/branches' },
+    { name: 'Users and Roles', route: '/organization/users-roles' },
+  ],
 };
 
 export default function Sidebar() {
