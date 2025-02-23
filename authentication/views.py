@@ -71,16 +71,11 @@ class OTPVerifyView(APIView):
         refresh = RefreshToken.for_user(user)
         organization = user.organization  
 
-        branches = user.branches.all()  
-
-        branch_roles = {branch.id: user.get_role(branch) for branch in branches}
         return Response({
             'detail': 'Login successful',
             'access': str(refresh.access_token), # access token
             'refresh': str(refresh), # refresh token
             "Organization": organization.id if organization else None,
-            "Branches": [branch.id for branch in branches], 
-            "Branch_roles": branch_roles              
         }, status=status.HTTP_200_OK)
 
 
@@ -122,6 +117,9 @@ class ResendOTPView(APIView):
             [user.email],
             fail_silently=False,
         )
+        print("=================================================================")
+        print(f'Your new OTP code is {otp_code}. It will expire in 4 minutes.')
+        print("=================================================================")
 
         return Response({
             'detail': 'New OTP sent to email.',
