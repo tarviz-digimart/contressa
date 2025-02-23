@@ -66,14 +66,11 @@ class RoleSerializer(serializers.ModelSerializer):
         request = self.context.get("request")  # Get request from context
         if request:
             self.organization_id = request.headers.get("Organization")  # Get org ID from headers
-            print(f"===> org id: {self.organization_id}")
         else:
             self.organization_id = None  # Default to None if request is not available
 
     def validate_level(self, value):
             """Ensure role levels are consecutive within an organization."""
-            print("validating...")
-            print(f"org id is {self.organization_id}")
             if not self.organization_id:
                 raise serializers.ValidationError("Organization ID is required.")
             
