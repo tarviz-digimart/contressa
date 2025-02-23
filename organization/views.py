@@ -13,6 +13,7 @@ from rest_framework import status
 from django.core.mail import send_mail
 from organization.models import OrganizationInvite, Role
 from django.utils.timezone import now
+from django.core.exceptions import ValidationError
 
 
 User = get_user_model()
@@ -36,6 +37,26 @@ class LocationViewSet(viewsets.ModelViewSet):
     serializer_class = LocationSerializer
     # permission_classes = [HasSuperuserAccess]
 
+    def get_queryset(self):
+        """Return locations belonging to the organization from request header"""
+        organization_id = self.request.headers.get("Organization")
+        if not organization_id:
+            return Location.objects.none()
+
+        return Location.objects.filter(organization_id=organization_id)
+
+    def perform_create(self, serializer):
+        """Assign organization from request header before saving"""
+        organization_id = self.request.headers.get("Organization")
+        if not organization_id:
+            raise ValidationError({"error": "Organization ID is required in the header."})
+
+        serializer.save(organization_id=organization_id)
+
+    def partial_update(self, request, *args, **kwargs):
+        """Only allow partial updates (PATCH)"""
+        return super().partial_update(request, *args, **kwargs)
+
 
 class BranchViewSet(viewsets.ModelViewSet):
     """
@@ -43,11 +64,33 @@ class BranchViewSet(viewsets.ModelViewSet):
     A branch belongs to a specific location.
     Branch admins are responsible for managing the branch.
     """
-    queryset = Branch.objects.all()
     serializer_class = BranchSerializer
-    # permission_classes = [HasBranchAdminAccess]
+    queryset = Branch.objects.all()
+    http_method_names = ["get", "post", "patch", "delete"] 
 
+    def get_queryset(self):
+        """Return branches belonging to the organization from request header"""
+        organization_id = self.request.headers.get("Organization")
+        if not organization_id:
+            return Branch.objects.none()  # Return empty queryset if no org ID
 
+        return Branch.objects.filter(organization_id=organization_id).exclude(
+            id=Organization.objects.filter(id=organization_id)
+            .values_list("headquarters_id", flat=True)
+            .first()
+        )
+
+    def perform_create(self, serializer):
+        """Assign organization from request header before saving"""
+        organization_id = self.request.headers.get("Organization")
+        if not organization_id:
+            raise ValidationError({"error": "Organization ID is required in the header."})
+
+        serializer.save(organization_id=organization_id)
+
+    def partial_update(self, request, *args, **kwargs):
+        """Only allow partial updates (PATCH)"""
+        return super().partial_update(request, *args, **kwargs)
 
 class DesignationViewSet(viewsets.ModelViewSet):
     """
@@ -147,6 +190,8 @@ class RoleViewSet(viewsets.ModelViewSet):
     """
     queryset = Role.objects.all() 
     serializer_class = RoleSerializer
+    http_method_names = ["get", "post", "patch", "delete"] 
+
 
     def get_queryset(self):
         """Return roles belonging to the organization from request header"""
