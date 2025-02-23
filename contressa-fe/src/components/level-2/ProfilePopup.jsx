@@ -1,11 +1,11 @@
-"use client"
+'use client';
 
 import { useRef } from 'react';
 import { Avatar, MenuItem, Divider, Typography, Paper } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-
+import { ProfileData } from '@/DummyData/FakeData';
 const ProfilePopup = ({ isOpen, handleClose, ref }) => {
   const router = useRouter();
 
@@ -30,7 +30,7 @@ const ProfilePopup = ({ isOpen, handleClose, ref }) => {
   };
 
   if (!isOpen) return null;
-
+  const data = { name: 'Alexandar', email: 'alexandar.the.great@gmail.com' };
   return (
     <Paper
       ref={ref}
@@ -43,10 +43,10 @@ const ProfilePopup = ({ isOpen, handleClose, ref }) => {
         <AccountCircleIcon className="text-gray-500 text-4xl" />
         <div>
           <Typography variant="subtitle1" className="text-b2">
-            DARSHAN KATHIRAVAN
+            {ProfileData.name}
           </Typography>
           <Typography variant="body2" className="text-b1 text-gray-500">
-            kathiravandarshan@gmail.com
+            {ProfileData.email}
           </Typography>
         </div>
       </div>

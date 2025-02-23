@@ -1,8 +1,8 @@
-"use client";
-import AboutSection from "@/components/level-2/Profile/AboutSection";
-import WorkedOn from "@/components/level-2/Profile/Projects";
-import WorkedIn from "@/components/level-2/Profile/Activities";
-
+'use client';
+import AboutSection from '@/components/level-2/Profile/AboutSection';
+import WorkedOn from '@/components/level-2/Profile/Projects';
+import WorkedIn from '@/components/level-2/Profile/Activities';
+import { ProfileData } from '@/DummyData/FakeData';
 export default function Home() {
   return (
     <div className="flex justify-center py-10 px-4 text-black">
@@ -10,7 +10,7 @@ export default function Home() {
         {/* Sidebar */}
 
         <div className="p-6 flex flex-col items-center">
-          <AboutSection />
+          <AboutSection ProfileData={ProfileData} />
         </div>
 
         {/* Main Content */}

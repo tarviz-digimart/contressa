@@ -3,7 +3,7 @@
 import { Button, InputAdornment, TextField, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
-import AutoCompleteWithChips from '@/components/level-1/AutoCompleteWithChips';
+import AutoCompleteWithChips from '@/components/level-1/Kanban/AutoCompleteWithChips';
 import BasicSelect from '@/components/level-1/BasicSelect';
 import AddIcon from '@mui/icons-material/Add';
 import ChartColumn from '@/components/level-1/ChartColumn';
@@ -17,7 +17,7 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
-import WorkItemCard from '@/components/level-1/WorkItemCard';
+import WorkItemCard from '@/components/level-1/Kanban/WorkItemCard';
 
 function Page() {
   const sensors = useSensors(
@@ -176,7 +176,7 @@ function Page() {
     };
 
     setColumns([...columns, newColumn]);
-  }
+  };
 
   return (
     <div className="flex flex-col items-start justify-start px-10 py-4 w-full gap-y-6 h-full">
@@ -275,11 +275,7 @@ function Page() {
             />
           ))}
         </div>
-        <DragOverlay>
-          {activeItem && (
-            <WorkItemCard {...activeItem} />
-          )}
-        </DragOverlay>
+        <DragOverlay>{activeItem && <WorkItemCard {...activeItem} />}</DragOverlay>
       </DndContext>
     </div>
   );

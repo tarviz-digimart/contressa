@@ -9,7 +9,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Divider from '@mui/material/Divider';
 import BasicSelect from '../BasicSelect';
 import VerticalLinearStepper from './VerticalStepper';
-import LimitTags from '../LimitTags';
+import LimitTags from './LimitTags';
 import { TextField } from '@mui/material';
 
 const DropdownField = ({ label, placeholder, data, onChange, avatar }) => (

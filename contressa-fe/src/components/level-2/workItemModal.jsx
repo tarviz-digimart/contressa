@@ -7,7 +7,7 @@ import { Avatar, IconButton, Paper, Switch, TextField } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import StyledAccordion from '../level-1/workItemModal/WorkItemAccordion';
 import { getAvatarColor } from '../../utils/avatarColors';
-import RichTextEditor from '../level-1/RichTextEditor';
+import RichTextEditor from '../level-1/workItemModal/RichTextEditor';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import AddLinkIcon from '@mui/icons-material/AddLink';

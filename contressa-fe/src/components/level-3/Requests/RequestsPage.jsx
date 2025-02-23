@@ -187,7 +187,7 @@ const RequestsPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <AdminView 
         pendingApprovals={pendingApprovals}
         approvedRequests={approvedRequests}
