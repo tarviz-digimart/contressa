@@ -8,6 +8,12 @@ class UserSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ["id", "full_name", "email", "created_at", "active_status"]
 
+class UserNameSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CustomUser
+        fields = ["id", "full_name"]
+
 
 class EmployeeListSerializer(serializers.ModelSerializer):
     full_name = serializers.CharField(source="user.full_name", read_only=True)
@@ -20,7 +26,10 @@ class EmployeeListSerializer(serializers.ModelSerializer):
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
-    user = UserSerializer()  # Full user details
+    user = UserSerializer(read_only=True)  # Display full user details on GET
+    user_id = serializers.PrimaryKeyRelatedField(  # Accept ID on POST
+        queryset=CustomUser.objects.all(), source="user", write_only=True
+    )
     reports_to = serializers.SerializerMethodField()
 
     # Accept IDs when creating/updating
@@ -45,6 +54,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "user",
+            "user_id",
             "branch",
             "branch_id",  # Accept ID for input
             "role",

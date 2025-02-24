@@ -1,13 +1,7 @@
 from rest_framework import serializers
 from organization.models import Organization, Location, Branch, Role, Designation
-from base.serializers import UserSerializer
+from base.serializers import UserNameSerializer
 from django.db import models
-
-class OrganizationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Organization
-        fields = "__all__"
-
 
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -37,7 +31,6 @@ class BranchSerializer(serializers.ModelSerializer):
             "city",
             "state",
             "postal_code",
-            "organization",
         ]
         extra_kwargs = {"organization": {"required": False}}  
 
@@ -83,6 +76,16 @@ class BranchSerializer(serializers.ModelSerializer):
         return instance
 
 
+class OrganizationSerializer(serializers.ModelSerializer):
+    headquarters = BranchSerializer(read_only=True) 
+    domains = serializers.ListField(
+        child=serializers.CharField(max_length=255), required=False
+    )
+    owner = UserNameSerializer(read_only=True)
+
+    class Meta:
+        model = Organization
+        fields = ["id", "name", "description", "owner", "headquarters", "domains"]
 
 class DesignationSerializer(serializers.ModelSerializer):
     class Meta:

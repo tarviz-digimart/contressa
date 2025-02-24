@@ -8,6 +8,7 @@ import uuid
 from django.core.exceptions import ValidationError
 from crum import get_current_user
 from django.db.models.signals import pre_save
+from django.contrib.postgres.fields import ArrayField 
 
 
 class Organization(BaseModel):
@@ -19,7 +20,7 @@ class Organization(BaseModel):
         related_name="hq_of",
         help_text="The main headquarters of the organization."
     )
-
+    domains = ArrayField(models.CharField(max_length=255), blank=True, default=list)  
     def clean(self):
         """Ensure a user cannot be the owner of multiple organizations."""
         if self.owner and Organization.objects.filter(owner=self.owner).exclude(id=self.id).exists():

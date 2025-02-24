@@ -14,6 +14,8 @@ from django.core.mail import send_mail
 from organization.models import OrganizationInvite, Role
 from django.utils.timezone import now
 from django.core.exceptions import ValidationError
+from django.db import transaction
+from django.contrib.auth.hashers import make_password
 
 
 User = get_user_model()
@@ -110,41 +112,43 @@ class InviteUserView(APIView):
         branch_id = request.data.get("branch_id")
         designation_id = request.data.get("designation_id")
         notes = request.data.get("notes")
-        # organization_id = request.user.organization.id  
-        organization_id = request.data.get("organization_id")
+        organization_id = request.headers.get("Organization")
 
-        # Step 1: Check if an invitation already exists
-        organization = Organization.objects.get(id=organization_id)
-        designation = Designation.objects.get(id=designation_id)
-        role = Role.objects.get(id=role_id)
-        branch = Branch.objects.get(id=branch_id)
-        existing_user = User.objects.filter(email=email, organization=organization).first()
+        existing_user = User.objects.filter(email=email, organization_id=organization_id).first()
         if existing_user:
             return Response({"detail": "User is already a member of this organization."}, status=status.HTTP_400_BAD_REQUEST)
 
         if OrganizationInvite.objects.filter(email=email, organization_id=organization_id).exists():
             return Response({"detail": "User has already been invited."}, status=status.HTTP_400_BAD_REQUEST)
-
+        try:
+            organization = Organization.objects.get(id=organization_id)
+        except Organization.DoesNotExist:
+            return Response({"detail": "Invalid organization."}, status=status.HTTP_400_BAD_REQUEST)
+        email_domain = email.split("@")[-1]
+        if email_domain not in organization.domains:
+            return Response(
+                {"detail": "Email domain is not allowed for this organization."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         invite = OrganizationInvite.objects.create(
             email=email,
             full_name=full_name,
             organization_id=organization_id,
             role_id=role_id,
             branch_id=branch_id,
-            designation=designation,
+            designation_id=designation_id,
             notes=notes,
         )
 
         invite_link = f"https://{settings.DOMAIN_ADDRESS}/accept-invite/{invite.token}/"
         send_mail(
             "You're invited to join the organization",
-            f"Hello {full_name},\n\nYou have been invited to join {organization.name}. Click the link below to accept the invitation:\n\n{invite_link}",
+            f"Hello {full_name},\n\nYou have been invited to join . Click the link below to accept the invitation:\n\n{invite_link}",
             "noreply@yourcrm.com",
             [email],
         )
 
         return Response({"message": "Invitation sent successfully"}, status=status.HTTP_201_CREATED)
-
 
 
 class AcceptInviteView(APIView):
@@ -155,34 +159,49 @@ class AcceptInviteView(APIView):
             return Response({"detail": "Invalid or expired invitation."}, status=status.HTTP_400_BAD_REQUEST)
 
         # Check if user already exists in the organization
-        existing_user = User.objects.filter(email=invite.email, organization=invite.organization).first()
-        if existing_user:
+        if User.objects.filter(email=invite.email, organization=invite.organization).exists():
             return Response({"detail": "User is already part of this organization."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        password = request.data.get("password")
+        confirm_password = request.data.get("confirm_password")
 
-        # Create or fetch the user
-        user = User.objects.create(
-            email=invite.email,
-            full_name= invite.full_name
-        )
+        # Validate passwords
+        if not password or not confirm_password:
+            return Response({"detail": "Both password fields are required."}, status=status.HTTP_400_BAD_REQUEST)
+        if password != confirm_password:
+            return Response({"detail": "Passwords do not match."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        with transaction.atomic():
+            try:
+                user = User.objects.create(
+                    email=invite.email,
+                    full_name=invite.full_name,
+                    organization=invite.organization,
+                    user_type="employee",
+                    password=make_password(password) 
+                )
 
-        employee_data = {
-            "user": user.id,
-            "organization": invite.organization.id,
-            "role": invite.role.id if invite.role else None,
-            "branch": invite.branch.id if invite.branch else None,
-            "designation": invite.designation.id if invite.designation else None,
-            "joining_date": now().date()
-        }
+                employee_data = {
+                    "user_id": user.id,  # Pass as a dictionary
+                    "organization_id": invite.organization.id,
+                    "role_id": invite.role.id if invite.role else None,
+                    "branch_id": invite.branch.id if invite.branch else None,
+                    "designation_id": invite.designation.id if invite.designation else None,
+                    "joining_date": now().date(),
+                }
 
-        # Use serializer to create employee
-        serializer = EmployeeSerializer(data=employee_data)
-        if serializer.is_valid():
-            serializer.save()
-            invite.accepted = True
-            invite.save()
-            return Response({"message": "Invitation accepted. User added successfully!"}, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                # Use serializer to create employee
+                serializer = EmployeeSerializer(data=employee_data)
+                if serializer.is_valid():
+                    serializer.save(user=user)  # Pass user explicitly
+                    invite.accepted = True
+                    invite.save()
+                    return Response({"message": "Invitation accepted. User added successfully!"}, status=status.HTTP_201_CREATED)
+                else:
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            except Exception as e:
+                transaction.set_rollback(True) 
+                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class RoleViewSet(viewsets.ModelViewSet):
     """
