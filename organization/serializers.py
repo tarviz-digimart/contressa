@@ -1,38 +1,91 @@
 from rest_framework import serializers
 from organization.models import Organization, Location, Branch, Role, Designation
-from base.serializers import UserSerializer
+from base.serializers import UserNameSerializer
 from django.db import models
-
-class OrganizationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Organization
-        fields = "__all__"
-
 
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
-        fields = "__all__"
+        fields = ["id", "name"]
 
+
+class BranchNameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Branch
+        fields = [
+            "id",
+            "name",
+        ]
 
 class BranchSerializer(serializers.ModelSerializer):
-    users = serializers.SerializerMethodField()
+    location = LocationSerializer()
 
     class Meta:
         model = Branch
-        fields = ["id", "name", "location", "address_line_1", "address_line_2", "city", "state", "postal_code", "users"]
+        fields = [
+            "id",
+            "name",
+            "location",
+            "address_line_1",
+            "address_line_2",
+            "city",
+            "state",
+            "postal_code",
+        ]
+        extra_kwargs = {"organization": {"required": False}}  
 
-    def get_users(self, obj):
-        """Return all users in the branch categorized by their roles."""
-        context = self.context  # Pass request & branch context
-        context["branch"] = obj  
+    def create(self, validated_data):
+        request = self.context.get("request") 
+        organization_id = request.headers.get("Organization")
 
-        return {
-            "superusers": UserSerializer(obj.location.organization.superusers.all(), many=True, context=context).data,
-            "admins": UserSerializer(obj.admins.all(), many=True, context=context).data,
-            "employees": UserSerializer(obj.employees.all(), many=True, context=context).data,
-        }
+        if not organization_id:
+            raise serializers.ValidationError({"organization": "Organization ID is required in the header."})
 
+        location_data = validated_data.pop("location", None)
+        if not isinstance(location_data, dict):
+            raise serializers.ValidationError({"location": "Invalid format. Expected an object with 'name'."})
+
+        location, _ = Location.objects.get_or_create(
+            name=location_data["name"], organization_id=organization_id
+        )
+
+        branch = Branch.objects.create(
+            location=location,
+            **validated_data,
+        )
+        organization = Organization.objects.get(id=organization_id)
+        if not organization.headquarters:
+            organization.headquarters = branch
+            organization.save(update_fields=["headquarters"])
+
+        return branch
+
+    def update(self, instance, validated_data):
+        location_data = validated_data.pop("location", None)
+
+        # Update location if provided
+        if location_data:
+            instance.location.name = location_data.get("name", instance.location.name)
+            instance.location.save()
+
+        # Update other fields
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        return instance
+
+
+class OrganizationSerializer(serializers.ModelSerializer):
+    headquarters = BranchSerializer(read_only=True) 
+    domains = serializers.ListField(
+        child=serializers.CharField(max_length=255), required=False
+    )
+    owner = UserNameSerializer(read_only=True)
+
+    class Meta:
+        model = Organization
+        fields = ["id", "name", "description", "owner", "headquarters", "domains"]
 
 class DesignationSerializer(serializers.ModelSerializer):
     class Meta:
