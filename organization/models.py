@@ -270,12 +270,6 @@ PERMISSION_CHOICES = [
     ("resolve_tickets", "Resolve Tickets"),
 ]
 
-class Permission(models.Model):
-    name = models.CharField(max_length=255, unique=True) 
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)    
-    def __str__(self):
-        return self.name
-
 
 class Role(BaseModel):
     name = models.CharField(max_length=255)
@@ -307,7 +301,11 @@ class Role(BaseModel):
                 name='unique_role_per_organization'
             )
         ]
-
+        
+    def has_permission(self, permission_code):
+        """Check if the role includes a specific permission."""
+        return permission_code in self.permissions
+    
     def __str__(self):
         return self.name
 

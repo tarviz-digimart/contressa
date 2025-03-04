@@ -16,7 +16,7 @@ from django.utils.timezone import now
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.contrib.auth.hashers import make_password
-
+from organization.permissions import HasPermission
 
 User = get_user_model()
 
@@ -69,7 +69,21 @@ class BranchViewSet(viewsets.ModelViewSet):
     serializer_class = BranchSerializer
     queryset = Branch.objects.all()
     http_method_names = ["get", "post", "patch", "delete"] 
+    permission_classes = [HasPermission]
 
+    def get_permissions(self):
+        """Set dynamic permission codes per action."""
+        if self.action in ["list","retrieve"]:
+            self.permission_code = "view_branches"
+        elif self.action == "create":
+            self.permission_code = "create_branches"
+        elif self.action in ["update", "partial_update"]:
+            self.permission_code = "edit_branches"
+        elif self.action == "destroy":
+            self.permission_code = "delete_branches"
+
+        return [HasPermission()]
+    
     def get_queryset(self):
         """Return branches belonging to the organization from request header"""
         organization_id = self.request.headers.get("Organization")
@@ -210,6 +224,13 @@ class RoleViewSet(viewsets.ModelViewSet):
     queryset = Role.objects.all() 
     serializer_class = RoleSerializer
     http_method_names = ["get", "post", "patch", "delete"] 
+    permission_classes = [HasPermission]
+
+    def get_permissions(self):
+        """Grant access to all actions only if the user has 'manage_roles' permission."""
+        
+        self.permission_code = "manage_roles"
+        return [HasPermission()]
 
 
     def get_queryset(self):

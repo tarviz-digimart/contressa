@@ -56,12 +56,12 @@ urlpatterns = [
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0),name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0),name='schema-redoc'),
     path('api/', include(router.urls)),
-    path('login/', OTPLoginView.as_view(), name='otp-login'),
-    path('verify-otp/', OTPVerifyView.as_view(), name='verify-otp'),
-    path('resend-otp/', ResendOTPView.as_view(), name='otp-resend'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/send-invite/', InviteUserView.as_view(), name='send_invite'),
-    path('api/accept-invite/<uuid:token>', AcceptInviteView.as_view(), name='accept_invite'),
+    path('api/auth/login/', OTPLoginView.as_view(), name='otp-login'),
+    path('api/auth/verify-otp/', OTPVerifyView.as_view(), name='verify-otp'),
+    path('api/auth/resend-otp/', ResendOTPView.as_view(), name='otp-resend'),
+    path('api/auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/organization/send-invite/', InviteUserView.as_view(), name='send_invite'),
+    path('api/organization/accept-invite/<uuid:token>', AcceptInviteView.as_view(), name='accept_invite'),
 
 ]
 

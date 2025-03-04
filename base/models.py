@@ -153,6 +153,11 @@ class Employee(BaseModel):
         else:
             super().delete(*args, **kwargs)
 
+    def has_permission(self, permission_code):
+        """Check if the user's role has a given permission."""
+        if self.role:
+            return self.role.has_permission(permission_code)
+        return False
 
 class Vendor(BaseModel):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="vendor_profile")
