@@ -31,8 +31,11 @@ class OTPLoginView(APIView):
         totp = pyotp.TOTP(otp_secret, interval=240)
         otp_code = totp.now()
         if settings.TEST_MODE:
+            print("*** You're in TEST MODE ***")
             pending_record.raw_otp=otp_code
             pending_record.save(update_fields=["raw_otp"])
+            print("Saved raw_otp:", pending_record.raw_otp)
+
 
         send_mail(
             'Your OTP Code',
