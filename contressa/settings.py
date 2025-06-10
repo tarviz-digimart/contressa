@@ -291,3 +291,5 @@ EMAIL_HOST_PASSWORD = os.getenv('SMTP_EMAIL_HOST_PASSWORD') # Use the 16-charact
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 
 DOMAIN_ADDRESS = "localhost:8000"
+
+TEST_MODE = os.getenv('TEST_MODE') == True
